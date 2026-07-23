@@ -213,6 +213,41 @@ body {
 .calendar-day-amount.positive { color: var(--income); }
 .calendar-day-amount.negative { color: var(--expense); }
 
+/* ===== 金额排行榜 ===== */
+.rank-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.rank-item:last-child { border-bottom: none; }
+.rank-badge {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.rank-badge.rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); }
+.rank-badge.rank-2 { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); }
+.rank-badge.rank-3 { background: linear-gradient(135deg, #CD7F32, #B8860B); }
+.rank-badge.rank-other { background: var(--text-muted); }
+.rank-info { flex: 1; min-width: 0; }
+.rank-category {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  margin-bottom: 4px;
+}
+.rank-bar-wrapper {
+  height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden;
+}
+.rank-bar {
+  height: 100%; border-radius: 3px; transition: width 0.3s ease;
+}
+.rank-amount {
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.rank-percent {
+  font-size: 11px; color: var(--text-muted);
+  margin-left: 4px; font-weight: 400;
+}
+
 /* ===== 添加表单 ===== */
 .form-card { background: var(--card); border-radius: var(--radius); padding: 18px 14px; box-shadow: var(--shadow); }
 .form-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; text-align: center; }
@@ -587,8 +622,9 @@ body {
     </div>
     <div class="line-controls">
       <div class="dimension-toggle">
-        <button class="dim-btn active" data-dimension="month">月</button>
+        <button class="dim-btn active" data-dimension="day">日</button>
         <button class="dim-btn" data-dimension="week">周</button>
+        <button class="dim-btn" data-dimension="month">月</button>
         <button class="dim-btn" data-dimension="year">年</button>
       </div>
     </div>
@@ -603,6 +639,19 @@ body {
   <div class="card chart-section">
     <h3>每日统计</h3>
     <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <!-- 金额排行榜 -->
+  <div class="card chart-section">
+    <div class="chart-header">
+      <h3>金额排行榜</h3>
+      <div class="chart-toggle">
+        <button class="toggle-btn active" data-rank-type="expense">支出</button>
+        <button class="toggle-btn" data-rank-type="income">收入</button>
+      </div>
+    </div>
+    <div id="rankList"></div>
+    <div class="chart-empty" id="rankEmpty" style="display:none;">暂无数据</div>
   </div>
 </div>
 
@@ -744,6 +793,16 @@ body {
       </div>
       <span class="arrow">›</span>
     </div>
+    <div class="settings-item" id="settingExportHistory">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="item-label">数据导出记录</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="item-value" id="exportHistoryCount">0 次</span>
+        <span class="arrow">›</span>
+      </div>
+    </div>
     <div class="settings-item" id="settingClearData" style="color:var(--expense);">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--expense)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
@@ -873,6 +932,22 @@ body {
     <div class="modal-actions">
       <button class="btn-cancel" id="btnCancelEdit">取消</button>
       <button class="btn-confirm" id="btnConfirmEdit">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 文件导入确认弹窗 ===== -->
+<div class="modal-overlay" id="importConfirmModal">
+  <div class="modal-box" style="max-width:400px;">
+    <h3>确认导入</h3>
+    <div class="modal-body" style="max-height:400px;overflow-y:auto;">
+      <div id="importErrorInfo" style="display:none;margin-bottom:12px;"></div>
+      <div id="importCountInfo" style="font-size:14px;font-weight:600;margin-bottom:12px;text-align:center;"></div>
+      <div id="importPreviewList" style="border:1px solid var(--border);border-radius:8px;max-height:250px;overflow-y:auto;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btnCancelImportFile">取消</button>
+      <button class="btn-confirm" id="btnConfirmImportFile">确认导入</button>
     </div>
   </div>
 </div>
@@ -1022,8 +1097,9 @@ body {
     month: new Date().getMonth() + 1,
     pieType: 'expense',
     lineType: 'expense',
-    lineDimension: 'month',
-    lineCategory: 'all'
+    lineDimension: 'day',
+    lineCategory: 'all',
+    rankType: 'expense'
   };
 
   function renderHome() {
@@ -1050,6 +1126,7 @@ body {
     renderPieChart(records);
     renderLineChart();
     renderCalendar();
+    renderRankList();
   }
 
   // 日历模块
@@ -1111,6 +1188,67 @@ body {
     }
     
     document.getElementById('calendarGrid').innerHTML = html;
+  }
+
+  // 金额排行榜
+  function renderRankList() {
+    const year = homeFilter.year;
+    const month = homeFilter.month;
+    const records = getMonthRecords(year, month - 1);
+    const filteredRecords = records.filter(r => r.type === homeFilter.rankType);
+
+    const rankList = document.getElementById('rankList');
+    const rankEmpty = document.getElementById('rankEmpty');
+
+    // 按分类汇总
+    const categoryMap = {};
+    filteredRecords.forEach(r => {
+      categoryMap[r.category] = (categoryMap[r.category] || 0) + r.amount;
+    });
+
+    const catEntries = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
+
+    if (catEntries.length === 0) {
+      rankList.innerHTML = '';
+      rankEmpty.style.display = 'block';
+      return;
+    }
+
+    rankEmpty.style.display = 'none';
+    const maxAmount = catEntries[0][1];
+    const total = catEntries.reduce((sum, entry) => sum + entry[1], 0);
+
+    const categories = homeFilter.rankType === 'expense' ? DEFAULT_CATEGORIES.expense : DEFAULT_CATEGORIES.income;
+    const categoryColorMap = {};
+    categories.forEach(c => { categoryColorMap[c.value] = c.color; });
+
+    let html = '';
+    catEntries.forEach((entry, index) => {
+      const category = entry[0];
+      const amount = entry[1];
+      const percent = total > 0 ? ((amount / total) * 100).toFixed(1) : 0;
+      const barWidth = maxAmount > 0 ? ((amount / maxAmount) * 100).toFixed(0) : 0;
+      const rankClass = index < 3 ? 'rank-' + (index + 1) : 'rank-other';
+      const color = categoryColorMap[category] || '#64748B';
+
+      html += `
+        <div class="rank-item">
+          <div class="rank-badge ${rankClass}">${index + 1}</div>
+          <div class="rank-info">
+            <div class="rank-category">${category}</div>
+            <div class="rank-bar-wrapper">
+              <div class="rank-bar" style="width:${barWidth}%;background:${color};"></div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="rank-amount" style="color:${homeFilter.rankType === 'expense' ? 'var(--expense)' : 'var(--income)'};">¥${formatMoneyRaw(amount)}</div>
+            <div class="rank-percent">${percent}%</div>
+          </div>
+        </div>
+      `;
+    });
+
+    rankList.innerHTML = html;
   }
 
   function renderPieChart(records) {
@@ -1222,7 +1360,21 @@ body {
       return true;
     });
 
-    if (dimension === 'month') {
+    if (dimension === 'day') {
+      // 显示当前月份的每一天
+      const year = homeFilter.year;
+      const month = homeFilter.month;
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
+        labels.push(day + '日');
+        const sum = filteredRecords
+          .filter(r => r.date === dateStr)
+          .reduce((acc, r) => acc + r.amount, 0);
+        data.push(sum);
+      }
+    } else if (dimension === 'month') {
       for (let i = 11; i >= 0; i--) {
         const d = new Date(homeFilter.year, homeFilter.month - 1 - i, 1);
         const y = d.getFullYear();
@@ -1293,13 +1445,13 @@ body {
           data,
           borderColor: lineColor,
           backgroundColor: gradient,
-          borderWidth: 2.5,
+          borderWidth: 1,
           fill: true,
           tension: 0.4,
-          pointRadius: 3,
+          pointRadius: 2,
           pointBackgroundColor: cardBg,
           pointBorderColor: lineColor,
-          pointBorderWidth: 2,
+          pointBorderWidth: 1,
           pointHoverRadius: 6,
           pointHoverBackgroundColor: lineColor,
           pointHoverBorderColor: cardBg,
@@ -1412,6 +1564,16 @@ body {
     });
   });
 
+  // 排行榜类型切换
+  document.querySelectorAll('.toggle-btn[data-rank-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toggle-btn[data-rank-type]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      homeFilter.rankType = btn.dataset.rankType;
+      renderRankList();
+    });
+  });
+
   // ===== 添加表单 =====
   let currentType = 'expense';
   const btnExpense = document.getElementById('btnExpense');
@@ -1467,7 +1629,6 @@ body {
     });
     showToast('记录已保存');
     resetForm();
-    setTimeout(() => switchTab('home'), 500);
   });
 
   // ===== 批量导入功能 =====
@@ -1546,43 +1707,148 @@ body {
           return;
         }
 
-        // 导入数据
-        let successCount = 0;
+        // 解析并验证数据
+        const validRecords = [];
+        const errors = [];
         for (let i = 1; i < jsonData.length; i++) {
           const row = jsonData[i];
           if (row.length === 0) continue;
 
-          const date = row[headerMap[0]];
-          const type = row[headerMap[1]];
+          let date = row[headerMap[0]];
+          let type = row[headerMap[1]];
           const category = row[headerMap[2]];
           const amount = parseFloat(row[headerMap[3]]);
           const note = row[headerMap[4]] || '';
 
-          if (!date || !type || !category || isNaN(amount) || amount <= 0) continue;
+          // 转换日期格式
+          if (typeof date === 'number') {
+            // Excel日期序列号转换为字符串
+            const excelDate = new Date((date - 25569) * 86400 * 1000);
+            date = excelDate.getFullYear() + '-' + String(excelDate.getMonth() + 1).padStart(2, '0') + '-' + String(excelDate.getDate()).padStart(2, '0');
+          } else if (date instanceof Date) {
+            date = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+          } else if (typeof date === 'string') {
+            // 验证日期格式 YYYY-MM-DD
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+              errors.push('第' + (i + 1) + '行日期格式错误: ' + date);
+              continue;
+            }
+          }
 
-          saveRecord({
-            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + i,
-            date: date,
-            category: category,
-            type: type,
-            amount: amount,
-            note: note
-          });
-          successCount++;
+          // 转换类型
+          if (type === '收入' || type === 'income') {
+            type = 'income';
+          } else if (type === '支出' || type === 'expense') {
+            type = 'expense';
+          } else {
+            errors.push('第' + (i + 1) + '行类型错误: ' + type);
+            continue;
+          }
+
+          // 验证数据
+          if (!date || !category || isNaN(amount) || amount <= 0) {
+            errors.push('第' + (i + 1) + '行数据不完整');
+            continue;
+          }
+
+          validRecords.push({ date, type, category, amount, note });
         }
 
-        if (successCount > 0) {
-          showToast('成功导入 ' + successCount + ' 条记录');
-          renderList();
-        } else {
+        if (validRecords.length === 0) {
           showToast('没有有效的数据可导入');
+          if (errors.length > 0) {
+            console.warn('导入错误:', errors);
+          }
+          return;
         }
+
+        // 显示确认弹窗
+        showImportConfirmModal(validRecords, errors);
       } catch (err) {
         showToast('文件解析失败：' + err.message);
       }
     };
     reader.readAsArrayBuffer(file);
     fileImport.value = '';
+  });
+
+  // 显示导入确认弹窗
+  function showImportConfirmModal(records, errors) {
+    const modal = document.getElementById('importConfirmModal');
+    const previewList = document.getElementById('importPreviewList');
+    const errorInfo = document.getElementById('importErrorInfo');
+    const countInfo = document.getElementById('importCountInfo');
+
+    // 显示预览（最多显示10条）
+    const previewRecords = records.slice(0, 10);
+    previewList.innerHTML = previewRecords.map(r => {
+      const typeText = r.type === 'income' ? '收入' : '支出';
+      return `<div style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;">
+        <div style="display:flex;justify-content:space-between;">
+          <span>${r.date}</span>
+          <span style="color:${r.type === 'income' ? 'var(--income)' : 'var(--expense)'};">${typeText}</span>
+        </div>
+        <div style="margin-top:4px;color:var(--text-secondary);">
+          ${r.category} - ¥${r.amount.toFixed(2)}
+          ${r.note ? '<br><span style="font-size:12px;color:var(--text-muted);">' + r.note + '</span>' : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    if (records.length > 10) {
+      previewList.innerHTML += `<div style="padding:8px;text-align:center;color:var(--text-muted);font-size:12px;">...还有 ${records.length - 10} 条记录</div>`;
+    }
+
+    // 显示错误信息
+    if (errors.length > 0) {
+      errorInfo.style.display = 'block';
+      errorInfo.innerHTML = `<div style="color:var(--expense);font-size:12px;margin-bottom:4px;">⚠ 发现 ${errors.length} 条错误数据（已跳过）:</div>
+        <div style="font-size:11px;color:var(--text-muted);max-height:60px;overflow-y:auto;">${errors.slice(0, 5).join('<br>')}${errors.length > 5 ? '<br>...' : ''}</div>`;
+    } else {
+      errorInfo.style.display = 'none';
+    }
+
+    // 显示统计
+    countInfo.textContent = `即将导入 ${records.length} 条有效记录`;
+
+    // 保存待导入数据
+    modal.dataset.pendingRecords = JSON.stringify(records);
+
+    // 显示弹窗
+    modal.classList.add('show');
+  }
+
+  // 确认导入
+  document.getElementById('btnConfirmImportFile').addEventListener('click', () => {
+    const modal = document.getElementById('importConfirmModal');
+    const records = JSON.parse(modal.dataset.pendingRecords);
+
+    let successCount = 0;
+    records.forEach((r, index) => {
+      saveRecord({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + index,
+        date: r.date,
+        category: r.category,
+        type: r.type,
+        amount: r.amount,
+        note: r.note
+      });
+      successCount++;
+    });
+
+    modal.classList.remove('show');
+    showToast('成功导入 ' + successCount + ' 条记录');
+
+    // 自动刷新
+    renderList();
+    renderHome();
+  });
+
+  // 取消导入
+  document.getElementById('btnCancelImportFile').addEventListener('click', () => {
+    const modal = document.getElementById('importConfirmModal');
+    modal.classList.remove('show');
+    showToast('已取消导入');
   });
 
   // 更新导入行的分类选项
@@ -1934,6 +2200,25 @@ body {
   });
 
   // ===== 导出 =====
+  function getExportHistory() {
+    try { return JSON.parse(localStorage.getItem('exportHistory') || '[]'); } catch { return []; }
+  }
+
+  function saveExportHistory(history) {
+    localStorage.setItem('exportHistory', JSON.stringify(history));
+  }
+
+  function addExportRecord(fileName, recordCount) {
+    const history = getExportHistory();
+    history.unshift({
+      fileName: fileName,
+      recordCount: recordCount,
+      time: new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    });
+    if (history.length > 50) history.length = 50;
+    saveExportHistory(history);
+  }
+
   function doExport(records, fileName) {
     if (records.length === 0) { showToast('没有可导出的记录'); return; }
     const s = getSettings();
@@ -1945,7 +2230,10 @@ body {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, '记账明细');
     ws['!cols'] = [{ wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 12 }, { wch: 30 }];
-    XLSX.writeFile(wb, fileName + '.xlsx');
+
+    const fullFileName = fileName + '.xlsx';
+    XLSX.writeFile(wb, fullFileName);
+    addExportRecord(fullFileName, records.length);
     showToast('导出成功');
   }
 
@@ -1963,6 +2251,8 @@ body {
     const s = getSettings();
     document.getElementById('accountNameDisplay').textContent = s.accountName;
     document.getElementById('currencyDisplay').textContent = s.currency;
+    const exportHistory = getExportHistory();
+    document.getElementById('exportHistoryCount').textContent = exportHistory.length + ' 次';
     applyTheme(s.theme);
   }
 
@@ -1981,6 +2271,10 @@ body {
     document.getElementById('genericModal').classList.add('show');
     const confirmBtn = document.getElementById('genericModalConfirm');
     const cancelBtn = document.getElementById('genericModalCancel');
+    // 重置按钮状态
+    confirmBtn.style.display = '';
+    confirmBtn.className = '';
+    cancelBtn.style.display = '';
     function cleanup() {
       document.getElementById('genericModal').classList.remove('show');
       confirmBtn.replaceWith(confirmBtn.cloneNode(true));
@@ -2089,6 +2383,47 @@ body {
     showGenericModal('确认导出', '<p style="font-size:13px;color:var(--text-secondary);">确定要导出全部 ' + totalRecords + ' 条记录吗？</p>', (close) => {
       doExport(getAllRecords(), '记账数据_全部_' + getTodayStr());
       close();
+    });
+  });
+
+  // 数据导出记录
+  document.getElementById('settingExportHistory').addEventListener('click', () => {
+    const history = getExportHistory();
+    const countEl = document.getElementById('exportHistoryCount');
+    countEl.textContent = history.length + ' 次';
+
+    if (history.length === 0) {
+      showGenericModal('数据导出记录', '<p style="font-size:13px;color:var(--text-secondary);text-align:center;padding:20px 0;">暂无导出记录</p>', (close) => close());
+      document.getElementById('genericModalConfirm').style.display = 'none';
+      return;
+    }
+
+    const listHtml = history.map((item, index) => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.fileName}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${item.time} · ${item.recordCount} 条记录</div>
+        </div>
+        <button class="icon-btn" style="flex-shrink:0;margin-left:8px;" data-index="${index}" title="删除">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        </button>
+      </div>
+    `).join('');
+
+    showGenericModal('数据导出记录', '<div style="max-height:400px;overflow-y:auto;">' + listHtml + '</div>', (close) => close());
+    document.getElementById('genericModalConfirm').style.display = 'none';
+
+    // 绑定删除按钮
+    document.querySelectorAll('[data-index]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const index = parseInt(e.currentTarget.getAttribute('data-index'));
+        const history = getExportHistory();
+        history.splice(index, 1);
+        saveExportHistory(history);
+        document.getElementById('exportHistoryCount').textContent = history.length + ' 次';
+        // 重新打开弹窗
+        document.getElementById('settingExportHistory').click();
+      });
     });
   });
 
