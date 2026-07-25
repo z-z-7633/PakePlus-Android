@@ -248,6 +248,46 @@ body {
   margin-left: 4px; font-weight: 400;
 }
 
+/* ===== 记录页汇总数据 ===== */
+.list-summary {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 5px; padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.list-summary .summary-item {
+  display: flex; align-items: center; gap: 6px;
+}
+.list-summary .label {
+  font-size: 12px; color: var(--text-secondary); line-height: 1;
+}
+.list-summary .value {
+  font-size: 14px; font-weight: 550; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.list-summary .income .value { color: var(--income); }
+.list-summary .expense .value { color: var(--expense); }
+.list-summary .balance .value { color: var(--primary); }
+
+/* ===== 分类筛选折叠 ===== */
+.category-filter-wrapper {
+  background: var(--card); border-radius: var(--radius-sm);
+  margin-bottom: 5px; overflow: hidden; box-shadow: var(--shadow);
+}
+.category-filter-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 12px; cursor: pointer; font-size: 13px;
+  color: var(--text-secondary); user-select: none;
+}
+.category-filter-header:active { background: var(--bg); }
+.category-filter-header svg { flex-shrink: 0; }
+.category-filter-header.expanded svg { transform: rotate(180deg); }
+.category-filter-content {
+  padding: 0 12px 10px;
+}
+.category-filter-content .category-chips {
+  gap: 6px;
+}
+
 /* ===== 添加表单 ===== */
 .form-card { background: var(--card); border-radius: var(--radius); padding: 18px 14px; box-shadow: var(--shadow); }
 .form-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; text-align: center; }
@@ -406,12 +446,6 @@ body {
 .filter-date-row input:focus { border-color: var(--primary); }
 .filter-date-row .date-sep { font-size: 12px; color: var(--text-muted); }
 
-.record-count { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-
-.sort-bar {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-  font-size: 11px; color: var(--text-muted);
-}
 .sort-select {
   padding: 4px 8px; border: 1.5px solid var(--border); border-radius: 14px;
   font-size: 11px; color: var(--text-muted); background: var(--card);
@@ -490,6 +524,65 @@ body {
 .settings-item .item-value { font-size: 13px; color: var(--text-muted); }
 .settings-item .arrow { color: var(--text-muted); font-size: 14px; }
 
+/* Toggle Switch */
+.toggle-switch {
+  position: relative; display: inline-block; width: 44px; height: 24px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0; background: var(--border);
+  border-radius: 24px; transition: 0.3s;
+}
+.slider:before {
+  position: absolute; content: ""; height: 18px; width: 18px;
+  left: 3px; bottom: 3px; background: white;
+  border-radius: 50%; transition: 0.3s;
+}
+.toggle-switch input:checked + .slider { background: var(--primary); }
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* 密码输入框容器 */
+.password-input-wrapper {
+  position: relative; display: block;
+}
+.password-input-wrapper input {
+  width: 100%; padding-right: 40px;
+}
+.password-toggle {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; color: var(--text-muted); display: flex; align-items: center;
+  transition: color 0.2s;
+}
+.password-toggle:hover { color: var(--text-secondary); }
+.password-toggle svg { width: 18px; height: 18px; }
+
+/* 数字键盘 */
+.numpad-key {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--card); border: none;
+  font-size: 24px; font-weight: 500;
+  color: var(--text); cursor: pointer;
+  transition: all 0.15s; display: flex;
+  align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 0 auto;
+}
+.numpad-key:active {
+  transform: scale(0.95);
+  background: var(--primary-light);
+}
+
+/* 密码圆点 */
+.password-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--border); transition: all 0.2s;
+}
+.password-dot.filled {
+  background: var(--primary);
+}
+
 /* 主题选择 */
 .theme-grid {
   display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 0;
@@ -535,17 +628,18 @@ body {
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.35);
   display: none; align-items: center; justify-content: center;
-  z-index: 200; padding: 24px;
+  z-index: 1100; padding: 24px;
 }
 .modal-overlay.show { display: flex; }
 .modal-box {
   background: var(--card); border-radius: var(--radius); padding: 22px;
   width: 100%; max-width: 320px; box-shadow: var(--shadow-md); animation: modalIn 0.2s ease;
+  max-height: 90vh; display: flex; flex-direction: column;
 }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
 .modal-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; text-align: center; }
 .modal-box p { font-size: 14px; text-align: center; margin-bottom: 16px; line-height: 1.5; }
-.modal-actions { display: flex; gap: 8px; }
+.modal-actions { display: flex; gap: 8px; flex-shrink: 0; }
 .modal-actions button {
   flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm);
   font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
@@ -556,7 +650,7 @@ body {
 .btn-danger { background: var(--expense); color: #fff; }
 
 /* 设置弹窗内容 */
-.modal-body { margin-bottom: 16px; }
+.modal-body { margin-bottom: 16px; overflow-y: auto; flex: 1; min-height: 0; }
 .modal-body label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
 .modal-body input, .modal-body select {
   width: 100%; padding: 9px 10px; border: 1.5px solid var(--border);
@@ -570,7 +664,7 @@ body {
   position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
   background: var(--text); color: var(--card); padding: 9px 18px;
   border-radius: 20px; font-size: 13px; opacity: 0;
-  transition: all 0.3s; z-index: 300; pointer-events: none; white-space: nowrap;
+  transition: all 0.3s; z-index: 1200; pointer-events: none; white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -699,31 +793,59 @@ body {
 
 <!-- ===== 记录列表 ===== -->
 <div id="page-list" class="tab-content">
-  <!-- 极简筛选条 + 导出按钮同行 -->
+  <!-- 汇总数据 -->
+  <div class="list-summary" id="listSummary">
+    <div class="summary-item">
+      <span class="label">条数</span>
+      <span class="value" id="recordCount" style="color:var(--text-secondary);font-weight:600;">0</span>
+    </div>
+    <div class="summary-item income">
+      <span class="label">收入</span>
+      <span class="value" id="listIncome">0.00</span>
+    </div>
+    <div class="summary-item expense">
+      <span class="label">支出</span>
+      <span class="value" id="listExpense">0.00</span>
+    </div>
+    <div class="summary-item balance">
+      <span class="label">结余</span>
+      <span class="value" id="listBalance">0.00</span>
+    </div>
+    <button class="icon-btn" id="btnExportExcel" title="导出Excel" style="width:30px;height:30px;box-shadow:none;background:var(--bg);flex-shrink:0;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+  </div>
+
+  <!-- 极简筛选条 + 排序 -->
   <div class="filter-bar" id="filterTypeBar">
     <span class="filter-chip active" data-type="all">不限</span>
     <span class="filter-chip" data-type="expense">支出</span>
     <span class="filter-chip" data-type="income">收入</span>
     <span style="flex:1;"></span>
-    <button class="icon-btn" id="btnExportExcel" title="导出Excel" style="width:30px;height:30px;box-shadow:none;background:var(--bg);">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    </button>
-  </div>
-  <div class="filter-bar" id="filterCategoryBar"></div>
-  <div class="filter-date-row">
-    <input type="date" id="filterStartDate">
-    <span class="date-sep">至</span>
-    <input type="date" id="filterEndDate">
-  </div>
-  <div class="sort-bar">
-    <select class="sort-select" id="sortSelect">
+    <select class="sort-select" id="sortSelect" style="width:auto;padding:4px 10px;font-size:12px;">
       <option value="time-desc">时间倒序</option>
       <option value="time-asc">时间正序</option>
       <option value="amount-desc">金额从高到低</option>
       <option value="amount-asc">金额从低到高</option>
     </select>
-    <span style="flex:1;"></span>
-    <span class="record-count" id="recordCount"></span>
+  </div>
+
+  <!-- 分类筛选折叠区 -->
+  <div class="category-filter-wrapper">
+    <div class="category-filter-header" id="categoryFilterToggle">
+      <span>分类筛选</span>
+      <span id="selectedCategoriesDisplay" style="font-size:11px;color:var(--text-muted);margin-left:8px;"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;transition:transform 0.2s;margin-left:auto;"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="category-filter-content" id="categoryFilterContent" style="display:none;">
+      <div class="category-chips" id="filterCategoryBar"></div>
+    </div>
+  </div>
+
+  <div class="filter-date-row">
+    <input type="date" id="filterStartDate">
+    <span class="date-sep">至</span>
+    <input type="date" id="filterEndDate">
   </div>
   <div class="record-list" id="recordList"></div>
   <div class="empty-state" id="listEmpty" style="display:none;">
@@ -809,6 +931,192 @@ body {
         <span class="item-label" style="color:var(--expense);">清除所有数据</span>
       </div>
       <span class="arrow">›</span>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-title">安全</div>
+    <div class="settings-item" id="settingSecurity">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span class="item-label">安全验证</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="item-value" id="securityStatus">已关闭</span>
+        <span class="arrow">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 密码验证锁屏 ===== -->
+<div id="lockScreen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:1000;align-items:center;justify-content:center;">
+  <div style="text-align:center;padding:10px 10px;max-width:320px;width:100%;display:flex;flex-direction:column;align-items:center;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:50px;height:50px;margin-bottom:16px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:40px;color:var(--text);">请输入密码</h2>
+    
+    <!-- 密码圆点显示 -->
+    <div id="lockPasswordDots" style="display:flex;justify-content:center;gap:12px;margin-bottom:50px;">
+      <!-- 动态生成 -->
+    </div>
+    
+    <!-- 数字键盘 -->
+    <div id="lockNumpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:240px;">
+      <button class="numpad-key" data-num="1">1</button>
+      <button class="numpad-key" data-num="2">2</button>
+      <button class="numpad-key" data-num="3">3</button>
+      <button class="numpad-key" data-num="4">4</button>
+      <button class="numpad-key" data-num="5">5</button>
+      <button class="numpad-key" data-num="6">6</button>
+      <button class="numpad-key" data-num="7">7</button>
+      <button class="numpad-key" data-num="8">8</button>
+      <button class="numpad-key" data-num="9">9</button>
+      <button class="numpad-key" data-num="clear" style="background:transparent;color:var(--text-secondary);font-size:14px;">清除</button>
+      <button class="numpad-key" data-num="0">0</button>
+      <button class="numpad-key" data-num="delete" style="background:transparent;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+      </button>
+    </div>
+    
+    <button id="lockForgotBtn" onclick="handleLockForgotPassword()" style="background:transparent;color:var(--text-secondary);border:none;font-size:13px;cursor:pointer;margin-top:32px;padding:8px;min-height:44px;min-width:44px;-webkit-tap-highlight-color:transparent;">忘记密码</button>
+  </div>
+</div>
+
+<!-- ===== 密码设置弹窗 ===== -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3 id="securityModalTitle">设置密码</h3>
+    <div class="modal-body">
+      <div id="securityModalContent">
+        <div id="securityToggleSection">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <span style="font-size:14px;color:var(--text);">启用安全验证</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="securityToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div id="securityPasswordSection" style="display:none;">
+          <div style="margin-bottom:12px;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">新密码</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="newPasswordInput" placeholder="4-8位数字" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+              <span class="password-toggle" data-target="newPasswordInput">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+              </span>
+            </div>
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">确认密码</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="confirmPasswordInput" placeholder="再次输入密码" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+              <span class="password-toggle" data-target="confirmPasswordInput">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+              </span>
+            </div>
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">安全问题（用于找回密码）</label>
+            <input type="text" id="securityQuestionInput" placeholder="如：我的生日" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">安全问题答案</label>
+            <input type="text" id="securityAnswerInput" placeholder="如：19900101" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+        <div id="securityActionSection" style="display:none;margin-top:16px;">
+          <button id="changePasswordBtn" style="width:100%;padding:10px;background:var(--bg);color:var(--text-secondary);border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:8px;">修改密码</button>
+          <button id="forgotPasswordBtn" style="width:100%;padding:10px;background:var(--expense-light);color:var(--expense);border:1.5px solid var(--expense);border-radius:8px;font-size:13px;cursor:pointer;">忘记密码</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="securityModalCancel">取消</button>
+      <button class="btn-confirm" id="securityModalConfirm">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 密码验证弹窗 ===== -->
+<div class="modal-overlay" id="passwordVerifyModal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3>验证密码</h3>
+    <div class="modal-body">
+      <div class="password-input-wrapper">
+        <input type="password" id="verifyPasswordInput" placeholder="请输入当前密码" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+        <span class="password-toggle" data-target="verifyPasswordInput">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="passwordVerifyCancel">取消</button>
+      <button class="btn-confirm" id="passwordVerifyConfirm">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 密码确认弹窗 ===== -->
+<div class="modal-overlay" id="passwordConfirmModal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3>安全验证</h3>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">请输入密码</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="passwordConfirmInput" placeholder="请输入密码" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+          <span class="password-toggle" data-target="passwordConfirmInput">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="passwordConfirmCancel">取消</button>
+      <button class="btn-confirm" id="passwordConfirmOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 忘记密码验证弹窗 ===== -->
+<div class="modal-overlay" id="forgotPasswordModal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3>找回密码</h3>
+    <div class="modal-body">
+      <!-- 第一步：验证安全问题 -->
+      <div id="forgotStep1">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;" id="forgotQuestionLabel">安全问题</label>
+          <input type="text" id="forgotAnswerInput" placeholder="请输入答案" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+        </div>
+      </div>
+      
+      <!-- 第二步：设置新密码 -->
+      <div id="forgotStep2" style="display:none;">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">新密码</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="forgotNewPasswordInput" placeholder="4-8位数字" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+            <span class="password-toggle" data-target="forgotNewPasswordInput">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+            </span>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">确认新密码</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="forgotConfirmPasswordInput" placeholder="再次输入新密码" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+            <span class="password-toggle" data-target="forgotConfirmPasswordInput">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="forgotPasswordCancel">取消</button>
+      <button class="btn-confirm" id="forgotPasswordNext">下一步</button>
     </div>
   </div>
 </div>
@@ -963,7 +1271,8 @@ body {
   const KEYS = {
     records: 'money_records',
     settings: 'money_settings',
-    categories: 'money_categories'
+    categories: 'money_categories',
+    security: 'money_security'
   };
 
   // ===== 默认分类 =====
@@ -1032,11 +1341,21 @@ body {
     return all.find(c => c.value === category) || { icon: '📦', color: '#64748B' };
   }
 
-  function showToast(msg) {
+  function showToast(msg, type = 'info') {
     const el = document.getElementById('toast');
     el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2000);
+    el.className = 'toast show';
+    if (type === 'success') {
+      el.style.background = 'var(--income)';
+    } else if (type === 'error') {
+      el.style.background = 'var(--expense)';
+    } else {
+      el.style.background = 'var(--text)';
+    }
+    setTimeout(() => {
+      el.classList.remove('show');
+      el.style.background = '';
+    }, 2000);
   }
 
   function getTodayStr() {
@@ -1181,13 +1500,90 @@ body {
         amountHtml = '<div class="calendar-day-amount ' + className + '">' + displayAmount + '</div>';
       }
       
-      html += '<div class="calendar-day' + (isToday ? ' today' : '') + '">' +
+      html += '<div class="calendar-day' + (isToday ? ' today' : '') + '" data-date="' + dateStr + '">' +
         '<div class="calendar-day-number">' + day + '</div>' +
         amountHtml +
         '</div>';
     }
-    
+
     document.getElementById('calendarGrid').innerHTML = html;
+
+    // 绑定点击事件
+    document.querySelectorAll('.calendar-day:not(.empty)').forEach(dayCell => {
+      dayCell.addEventListener('click', () => {
+        const date = dayCell.dataset.date;
+        showDayDetails(date);
+      });
+    });
+  }
+
+  // 显示当天明细
+  function showDayDetails(date) {
+    const allRecords = getAllRecords();
+    const dayRecords = allRecords.filter(r => r.date === date);
+
+    let sortBy = 'amount_desc'; // 默认金额倒序
+
+    function sortRecords(records, sortBy) {
+      let sorted = [...records];
+      if (sortBy === 'amount_desc') {
+        sorted.sort((a, b) => b.amount - a.amount);
+      } else {
+        sorted.sort((a, b) => a.amount - b.amount);
+      }
+      return sorted;
+    }
+
+    function buildDetailList(sortedRecords) {
+      if (sortedRecords.length === 0) {
+        return '<div style="text-align:center;padding:20px;color:var(--text-muted);">暂无记录</div>';
+      }
+
+      let html = '';
+      sortedRecords.forEach(r => {
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">${r.category}</div>
+              ${r.note ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + escapeHtml(r.note) + '</div>' : ''}
+            </div>
+            <div style="font-size:15px;font-weight:700;color:${r.type === 'expense' ? 'var(--expense)' : 'var(--income)'};">¥${formatMoneyRaw(r.amount)}</div>
+          </div>
+        `;
+      });
+      return html;
+    }
+
+    // 创建固定排序栏和内容区
+    let html = `
+      <div style="position:sticky;top:0;background:var(--card);padding-bottom:12px;margin-bottom:0;z-index:10;">
+        <select id="dayDetailSortSelect" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;">
+          <option value="amount_desc" ${sortBy === 'amount_desc' ? 'selected' : ''}>金额倒序</option>
+          <option value="amount_asc" ${sortBy === 'amount_asc' ? 'selected' : ''}>金额升序</option>
+        </select>
+      </div>
+      <div id="dayDetailListContainer">
+        ${buildDetailList(sortRecords(dayRecords, sortBy))}
+      </div>
+    `;
+
+    document.getElementById('genericModalTitle').textContent = date + ' - 明细';
+    document.getElementById('genericModalBody').innerHTML = html;
+    document.getElementById('genericModal').classList.add('show');
+    document.getElementById('genericModalConfirm').style.display = 'none';
+    document.getElementById('genericModalCancel').textContent = '关闭';
+
+    const sortSelect = document.getElementById('dayDetailSortSelect');
+    sortSelect.addEventListener('change', (e) => {
+      sortBy = e.target.value;
+      const sortedRecords = sortRecords(dayRecords, sortBy);
+      document.getElementById('dayDetailListContainer').innerHTML = buildDetailList(sortedRecords);
+    });
+
+    const cancelBtn = document.getElementById('genericModalCancel');
+    cancelBtn.onclick = () => {
+      document.getElementById('genericModal').classList.remove('show');
+    };
   }
 
   // 金额排行榜
@@ -1232,7 +1628,7 @@ body {
       const color = categoryColorMap[category] || '#64748B';
 
       html += `
-        <div class="rank-item">
+        <div class="rank-item" data-category="${category}" style="cursor:pointer;">
           <div class="rank-badge ${rankClass}">${index + 1}</div>
           <div class="rank-info">
             <div class="rank-category">${category}</div>
@@ -1249,6 +1645,98 @@ body {
     });
 
     rankList.innerHTML = html;
+
+    // 绑定点击事件
+    rankList.querySelectorAll('.rank-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const category = item.dataset.category;
+        showCategoryDetails(category);
+      });
+    });
+  }
+
+  // 显示分类明细
+  function showCategoryDetails(category) {
+    const year = homeFilter.year;
+    const month = homeFilter.month;
+    const records = getMonthRecords(year, month - 1);
+    const type = homeFilter.rankType;
+
+    const categoryRecords = records.filter(r => r.type === type && r.category === category);
+
+    let sortBy = 'amount_desc'; // 默认金额倒序
+
+    function sortRecords(records, sortBy) {
+      let sorted = [...records];
+      switch(sortBy) {
+        case 'amount_desc':
+          sorted.sort((a, b) => b.amount - a.amount);
+          break;
+        case 'amount_asc':
+          sorted.sort((a, b) => a.amount - b.amount);
+          break;
+        case 'date_desc':
+          sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+          break;
+        case 'date_asc':
+          sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+          break;
+      }
+      return sorted;
+    }
+
+    function buildDetailList(sortedRecords) {
+      if (sortedRecords.length === 0) {
+        return '<div style="text-align:center;padding:20px;color:var(--text-muted);">暂无记录</div>';
+      }
+
+      let html = '';
+      sortedRecords.forEach(r => {
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">${r.date}</div>
+              ${r.note ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + escapeHtml(r.note) + '</div>' : ''}
+            </div>
+            <div style="font-size:15px;font-weight:700;color:${type === 'expense' ? 'var(--expense)' : 'var(--income)'};">¥${formatMoneyRaw(r.amount)}</div>
+          </div>
+        `;
+      });
+      return html;
+    }
+
+    // 创建固定排序栏和可滚动内容区
+    let html = `
+      <div style="position:sticky;top:0;background:var(--card);padding-bottom:12px;margin-bottom:0;z-index:10;">
+        <select id="detailSortSelect" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;">
+          <option value="amount_desc" ${sortBy === 'amount_desc' ? 'selected' : ''}>金额倒序</option>
+          <option value="amount_asc" ${sortBy === 'amount_asc' ? 'selected' : ''}>金额升序</option>
+          <option value="date_desc" ${sortBy === 'date_desc' ? 'selected' : ''}>时间倒序</option>
+          <option value="date_asc" ${sortBy === 'date_asc' ? 'selected' : ''}>时间升序</option>
+        </select>
+      </div>
+      <div id="detailListContainer">
+        ${buildDetailList(sortRecords(categoryRecords, sortBy))}
+      </div>
+    `;
+
+    document.getElementById('genericModalTitle').textContent = category + ' - 明细';
+    document.getElementById('genericModalBody').innerHTML = html;
+    document.getElementById('genericModal').classList.add('show');
+    document.getElementById('genericModalConfirm').style.display = 'none';
+    document.getElementById('genericModalCancel').textContent = '关闭';
+
+    const sortSelect = document.getElementById('detailSortSelect');
+    sortSelect.addEventListener('change', (e) => {
+      sortBy = e.target.value;
+      const sortedRecords = sortRecords(categoryRecords, sortBy);
+      document.getElementById('detailListContainer').innerHTML = buildDetailList(sortedRecords);
+    });
+
+    const cancelBtn = document.getElementById('genericModalCancel');
+    cancelBtn.onclick = () => {
+      document.getElementById('genericModal').classList.remove('show');
+    };
   }
 
   function renderPieChart(records) {
@@ -1943,14 +2431,14 @@ body {
   let pendingDeleteId = null;
   let editingRecordId = null;
   let filteredRecords = [];
-  let listFilter = { type: 'all', category: 'all', startDate: '', endDate: '', sort: 'time-desc' };
+  let listFilter = { type: 'all', category: ['all'], startDate: '', endDate: '', sort: 'time-desc' };
 
   function initListFilters() {
     // 默认当月
     document.getElementById('filterStartDate').value = getMonthStart();
     document.getElementById('filterEndDate').value = getMonthEnd();
     listFilter.type = 'all';
-    listFilter.category = 'all';
+    listFilter.category = ['all'];
     listFilter.startDate = getMonthStart();
     listFilter.endDate = getMonthEnd();
     listFilter.sort = 'time-desc';
@@ -1978,8 +2466,20 @@ body {
     const seen = new Set();
     const unique = pool.filter(c => { if (seen.has(c.value)) return false; seen.add(c.value); return true; });
 
-    bar.innerHTML = '<span class="filter-chip' + (listFilter.category === 'all' ? ' active' : '') + '" data-cat="all">不限</span>' +
-      unique.map(c => '<span class="filter-chip' + (listFilter.category === c.value ? ' active' : '') + '" data-cat="' + c.value + '">' + c.icon + ' ' + c.value + '</span>').join('');
+    bar.innerHTML = '<span class="filter-chip' + (listFilter.category.includes('all') ? ' active' : '') + '" data-cat="all">不限</span>' +
+      unique.map(c => '<span class="filter-chip' + (listFilter.category.includes(c.value) ? ' active' : '') + '" data-cat="' + c.value + '">' + c.icon + ' ' + c.value + '</span>').join('');
+
+    // 更新已选中分类显示
+    const display = document.getElementById('selectedCategoriesDisplay');
+    if (listFilter.category.includes('all')) {
+      display.textContent = '';
+    } else {
+      const selectedNames = listFilter.category.map(cat => {
+        const found = unique.find(c => c.value === cat);
+        return found ? (found.icon + ' ' + found.value) : cat;
+      });
+      display.textContent = selectedNames.join('、');
+    }
   }
 
   function renderList() {
@@ -1988,7 +2488,7 @@ body {
     // 类型筛选
     if (listFilter.type !== 'all') records = records.filter(r => r.type === listFilter.type);
     // 分类筛选
-    if (listFilter.category !== 'all') records = records.filter(r => r.category === listFilter.category);
+    if (!listFilter.category.includes('all')) records = records.filter(r => listFilter.category.includes(r.category));
     // 日期筛选
     if (listFilter.startDate) records = records.filter(r => r.date >= listFilter.startDate);
     if (listFilter.endDate) records = records.filter(r => r.date <= listFilter.endDate);
@@ -2007,10 +2507,20 @@ body {
 
     filteredRecords = records;
 
+    // 计算汇总数据
+    let totalIncome = 0, totalExpense = 0;
+    records.forEach(r => {
+      if (r.type === 'income') totalIncome += r.amount;
+      else totalExpense += r.amount;
+    });
+    document.getElementById('listIncome').textContent = formatMoneyRaw(totalIncome);
+    document.getElementById('listExpense').textContent = formatMoneyRaw(totalExpense);
+    document.getElementById('listBalance').textContent = formatMoneyRaw(totalIncome - totalExpense);
+
     const listEl = document.getElementById('recordList');
     const emptyEl = document.getElementById('listEmpty');
     const countEl = document.getElementById('recordCount');
-    countEl.textContent = '共 ' + records.length + ' 条';
+    countEl.textContent = records.length;
 
     if (records.length === 0) { listEl.innerHTML = ''; emptyEl.style.display = 'block'; return; }
     emptyEl.style.display = 'none';
@@ -2070,18 +2580,58 @@ body {
     document.querySelectorAll('#filterTypeBar .filter-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     listFilter.type = chip.dataset.type;
-    listFilter.category = 'all';
+    listFilter.category = ['all'];
     renderCategoryChips();
     renderList();
+  });
+
+  // 分类筛选折叠切换
+  document.getElementById('categoryFilterToggle').addEventListener('click', () => {
+    const header = document.getElementById('categoryFilterToggle');
+    const content = document.getElementById('categoryFilterContent');
+    const isExpanded = header.classList.contains('expanded');
+    if (isExpanded) {
+      header.classList.remove('expanded');
+      content.style.display = 'none';
+    } else {
+      header.classList.add('expanded');
+      content.style.display = 'block';
+    }
   });
 
   // 分类筛选点击
   document.getElementById('filterCategoryBar').addEventListener('click', e => {
     const chip = e.target.closest('.filter-chip');
     if (!chip) return;
-    listFilter.category = chip.dataset.cat;
-    document.querySelectorAll('#filterCategoryBar .filter-chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
+    const cat = chip.dataset.cat;
+
+    // 点击"不限"
+    if (cat === 'all') {
+      listFilter.category = ['all'];
+    } else {
+      // 点击具体分类
+      const index = listFilter.category.indexOf(cat);
+      if (index > -1) {
+        // 已选中，取消选择
+        listFilter.category.splice(index, 1);
+      } else {
+        // 未选中，添加选择
+        listFilter.category.push(cat);
+      }
+
+      // 如果选中了具体分类，移除"不限"
+      if (listFilter.category.includes('all') && listFilter.category.length > 1) {
+        const allIndex = listFilter.category.indexOf('all');
+        listFilter.category.splice(allIndex, 1);
+      }
+
+      // 如果没有选中任何分类，自动选中"不限"
+      if (listFilter.category.length === 0) {
+        listFilter.category = ['all'];
+      }
+    }
+
+    renderCategoryChips();
     renderList();
   });
 
@@ -2315,8 +2865,39 @@ body {
     const cats = getCategories();
     let editType = 'expense';
 
+    const iconList = ['📌','⭐','🔖','💎','🎯','🏷️','✨','🔥','💡','📚','🎵','🎮','🏠','🚗','💰','🎁','📱','💻','☕','🍔'];
+    const colorList = [
+      { value: '#F97316', name: '橙色' },
+      { value: '#3B82F6', name: '蓝色' },
+      { value: '#EC4899', name: '粉色' },
+      { value: '#8B5CF6', name: '紫色' },
+      { value: '#06B6D4', name: '青色' },
+      { value: '#10B981', name: '绿色' },
+      { value: '#F59E0B', name: '黄色' },
+      { value: '#6366F1', name: '靛蓝' },
+      { value: '#EF4444', name: '红色' },
+      { value: '#14B8A6', name: '蓝绿' },
+      { value: '#F43F5E', name: '玫红' },
+      { value: '#84CC16', name: '黄绿' }
+    ];
+
     function buildCatHTML() {
       const list = cats[editType];
+
+      // 图标下拉框
+      let iconSelectHtml = '<select id="iconSelect" style="width:48px;padding:6px 2px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;text-align:center;">';
+      iconList.forEach(icon => {
+        iconSelectHtml += '<option value="' + icon + '">' + icon + '</option>';
+      });
+      iconSelectHtml += '</select>';
+
+      // 颜色下拉框
+      let colorSelectHtml = '<select id="colorSelect" style="width:50px;padding:6px 4px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;">';
+      colorList.forEach(c => {
+        colorSelectHtml += '<option value="' + c.value + '">' + c.name + '</option>';
+      });
+      colorSelectHtml += '</select>';
+
       return '<div style="display:flex;gap:6px;margin-bottom:10px;">' +
         '<button class="btn-confirm" id="catTypeExpense" style="flex:1;padding:7px;font-size:13px;' + (editType === 'expense' ? '' : 'background:var(--bg);color:var(--text-secondary);') + '">支出分类</button>' +
         '<button class="btn-confirm" id="catTypeIncome" style="flex:1;padding:7px;font-size:13px;' + (editType === 'income' ? '' : 'background:var(--bg);color:var(--text-secondary);') + '">收入分类</button>' +
@@ -2326,7 +2907,13 @@ body {
           (c.value !== '其他' ? '<button class="cat-del" data-idx="' + i + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' : '') +
         '</div>').join('') +
       '</div>' +
-      '<div class="add-category-row"><input type="text" id="newCatInput" placeholder="新分类名称" maxlength="10"><button id="addCatBtn">添加</button></div>';
+      '<style>#iconSelect,#colorSelect{max-height:50px;}</style>' +
+      '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;display:flex;gap:6px;">' +
+        iconSelectHtml +
+        colorSelectHtml +
+        '<input type="text" id="newCatInput" placeholder="新分类名称" maxlength="10" style="flex:1;min-width:0;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;height:36px;box-sizing:border-box;">' +
+        '<button id="addCatBtn" style="padding:0 14px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;height:36px;line-height:36px;">添加</button>' +
+      '</div>';
     }
 
     document.getElementById('genericModalTitle').textContent = '分类管理';
@@ -2352,14 +2939,15 @@ body {
           const name = document.getElementById('newCatInput').value.trim();
           if (!name) return;
           if (cats[editType].some(c => c.value === name)) { showToast('分类已存在'); return; }
-          const icons = ['📌','⭐','🔖','💎','🎯','🏷️','✨','🔥'];
-          const colors = ['#F97316','#3B82F6','#EC4899','#8B5CF6','#06B6D4','#10B981','#F59E0B','#6366F1'];
+          const selectedIcon = document.getElementById('iconSelect').value;
+          const selectedColor = document.getElementById('colorSelect').value;
           cats[editType].push({
             value: name,
-            icon: icons[Math.floor(Math.random() * icons.length)],
-            color: colors[Math.floor(Math.random() * colors.length)]
+            icon: selectedIcon,
+            color: selectedColor
           });
           saveCategories(cats);
+          document.getElementById('newCatInput').value = '';
           document.getElementById('genericModalBody').innerHTML = buildCatHTML();
           bindCatEvents();
           showToast('已添加');
@@ -2429,15 +3017,391 @@ body {
 
   // 清除数据
   document.getElementById('settingClearData').addEventListener('click', () => {
+    const security = getSecuritySettings();
+    
+    // 如果设置了密码，需要先验证密码
+    if (security.enabled && security.password) {
+      document.getElementById('passwordConfirmInput').value = '';
+      document.getElementById('passwordConfirmModal').classList.add('show');
+      return;
+    }
+    
+    // 没有设置密码，直接显示确认对话框
+    showClearDataConfirm();
+  });
+
+  // 密码确认弹窗事件
+  document.getElementById('passwordConfirmCancel').addEventListener('click', () => {
+    document.getElementById('passwordConfirmModal').classList.remove('show');
+    document.getElementById('passwordConfirmInput').value = '';
+  });
+
+  document.getElementById('passwordConfirmOk').addEventListener('click', () => {
+    const security = getSecuritySettings();
+    const password = document.getElementById('passwordConfirmInput').value;
+    
+    if (password !== security.password) {
+      showToast('密码错误', 'error');
+      document.getElementById('passwordConfirmInput').value = '';
+      document.getElementById('passwordConfirmInput').focus();
+      return;
+    }
+    
+    // 密码正确，关闭密码确认弹窗，显示清除确认对话框
+    document.getElementById('passwordConfirmModal').classList.remove('show');
+    document.getElementById('passwordConfirmInput').value = '';
+    showClearDataConfirm();
+  });
+
+  // 显示清除数据确认对话框
+  function showClearDataConfirm() {
     showGenericModal('清除数据', '<p style="color:var(--expense);font-size:13px;">此操作将删除所有记录，不可恢复！</p>',
       (close) => {
         save(KEYS.records, []);
         close();
-        showToast('数据已清除');
+        showToast('数据已清除', 'success');
         renderHome();
       }
     );
     document.getElementById('genericModalConfirm').className = 'btn-danger';
+  }
+
+  // ===== 安全设置 =====
+  let lockPasswordInput = '';
+  
+  function getSecuritySettings() {
+    return load(KEYS.security, { enabled: false, password: '', question: '', answer: '' });
+  }
+
+  function saveSecuritySettings(settings) {
+    save(KEYS.security, settings);
+  }
+
+  function showLockScreen() {
+    const security = getSecuritySettings();
+    const passwordLength = security.password ? security.password.length : 4;
+    lockPasswordInput = '';
+    
+    // 生成密码圆点
+    const dotsContainer = document.getElementById('lockPasswordDots');
+    dotsContainer.innerHTML = Array(passwordLength).fill('<div class="password-dot"></div>').join('');
+    
+    document.getElementById('lockScreen').style.display = 'flex';
+  }
+
+  function hideLockScreen() {
+    document.getElementById('lockScreen').style.display = 'none';
+    lockPasswordInput = '';
+  }
+
+  function checkSecurityOnStart() {
+    const security = getSecuritySettings();
+    if (security.enabled && security.password) {
+      showLockScreen();
+    }
+  }
+
+  // 全局函数：处理锁屏忘记密码
+  window.handleLockForgotPassword = function() {
+    console.log('忘记密码按钮点击');
+    const security = getSecuritySettings();
+    
+    if (!security.question) {
+      // 未设置安全问题，清除所有数据
+      const result = confirm('未设置安全问题，重置密码将清除所有数据，是否继续？');
+      if (result) {
+        localStorage.clear();
+        hideLockScreen();
+        alert('密码已重置，数据已清除');
+        location.reload();
+      }
+      return;
+    }
+    
+    // 有安全问题，在锁屏页面上打开忘记密码弹窗
+    document.getElementById('forgotQuestionLabel').textContent = security.question;
+    document.getElementById('forgotAnswerInput').value = '';
+    document.getElementById('forgotNewPasswordInput').value = '';
+    document.getElementById('forgotConfirmPasswordInput').value = '';
+    document.getElementById('forgotPasswordModal').classList.add('show');
+    console.log('打开忘记密码弹窗');
+  };
+
+  // 数字键盘点击
+  document.querySelectorAll('.numpad-key').forEach(key => {
+    key.addEventListener('click', () => {
+      const security = getSecuritySettings();
+      const passwordLength = security.password ? security.password.length : 4;
+      const num = key.getAttribute('data-num');
+      const dots = document.querySelectorAll('#lockPasswordDots .password-dot');
+      
+      if (num === 'clear') {
+        lockPasswordInput = '';
+        dots.forEach(dot => dot.classList.remove('filled'));
+      } else if (num === 'delete') {
+        if (lockPasswordInput.length > 0) {
+          lockPasswordInput = lockPasswordInput.slice(0, -1);
+          dots[lockPasswordInput.length].classList.remove('filled');
+        }
+      } else if (lockPasswordInput.length < passwordLength) {
+        lockPasswordInput += num;
+        dots[lockPasswordInput.length - 1].classList.add('filled');
+        
+        // 自动验证
+        if (lockPasswordInput.length === passwordLength) {
+          setTimeout(() => {
+            if (lockPasswordInput === security.password) {
+              hideLockScreen();
+            } else {
+              showToast('密码错误');
+              lockPasswordInput = '';
+              dots.forEach(dot => dot.classList.remove('filled'));
+            }
+          }, 150);
+        }
+      }
+    });
+  });
+
+  // 安全设置弹窗
+  document.getElementById('settingSecurity').addEventListener('click', () => {
+    const security = getSecuritySettings();
+    const toggle = document.getElementById('securityToggle');
+    toggle.checked = security.enabled;
+    
+    if (security.enabled) {
+      document.getElementById('securityPasswordSection').style.display = 'none';
+      document.getElementById('securityActionSection').style.display = 'block';
+    } else {
+      document.getElementById('securityPasswordSection').style.display = security.password ? 'none' : 'block';
+      document.getElementById('securityActionSection').style.display = 'none';
+    }
+
+    document.getElementById('securityModal').classList.add('show');
+  });
+
+  // 安全开关切换
+  document.getElementById('securityToggle').addEventListener('change', (e) => {
+    const security = getSecuritySettings();
+    const checked = e.target.checked;
+    
+    if (checked && !security.password) {
+      document.getElementById('securityPasswordSection').style.display = 'block';
+    } else {
+      document.getElementById('securityPasswordSection').style.display = 'none';
+    }
+    document.getElementById('securityActionSection').style.display = checked && security.password ? 'block' : 'none';
+  });
+
+  // 安全设置确定
+  document.getElementById('securityModalConfirm').addEventListener('click', () => {
+    const toggle = document.getElementById('securityToggle').checked;
+    const security = getSecuritySettings();
+    
+    // 判断是否在修改密码（已有密码且密码区域可见）
+    const isChangingPassword = security.password && document.getElementById('securityPasswordSection').style.display === 'block';
+    
+    if (isChangingPassword || (toggle && !security.password)) {
+      const newPwd = document.getElementById('newPasswordInput').value;
+      const confirmPwd = document.getElementById('confirmPasswordInput').value;
+      const question = document.getElementById('securityQuestionInput').value.trim();
+      const answer = document.getElementById('securityAnswerInput').value.trim();
+      
+      if (!newPwd || !/^\d{4,8}$/.test(newPwd)) {
+        showToast('请输入4-8位数字密码');
+        return;
+      }
+      if (newPwd !== confirmPwd) {
+        showToast('两次密码不一致');
+        return;
+      }
+      if (!question) {
+        showToast('请设置安全问题');
+        return;
+      }
+      if (!answer) {
+        showToast('请设置安全问题答案');
+        return;
+      }
+      security.password = newPwd;
+      security.question = question;
+      security.answer = answer;
+    }
+    
+    security.enabled = toggle;
+    saveSecuritySettings(security);
+    document.getElementById('securityModal').classList.remove('show');
+    document.getElementById('securityStatus').textContent = security.enabled ? '已开启' : '已关闭';
+    showToast('设置已保存');
+    
+    // 清空输入
+    document.getElementById('newPasswordInput').value = '';
+    document.getElementById('confirmPasswordInput').value = '';
+    document.getElementById('securityQuestionInput').value = '';
+    document.getElementById('securityAnswerInput').value = '';
+  });
+
+  document.getElementById('securityModalCancel').addEventListener('click', () => {
+    document.getElementById('securityModal').classList.remove('show');
+    document.getElementById('newPasswordInput').value = '';
+    document.getElementById('confirmPasswordInput').value = '';
+    document.getElementById('securityQuestionInput').value = '';
+    document.getElementById('securityAnswerInput').value = '';
+  });
+
+  // 修改密码
+  document.getElementById('changePasswordBtn').addEventListener('click', () => {
+    document.getElementById('passwordVerifyModal').classList.add('show');
+    document.getElementById('verifyPasswordInput').value = '';
+    document.getElementById('verifyPasswordInput').focus();
+  });
+
+  document.getElementById('passwordVerifyCancel').addEventListener('click', () => {
+    document.getElementById('passwordVerifyModal').classList.remove('show');
+  });
+
+  document.getElementById('passwordVerifyConfirm').addEventListener('click', () => {
+    const security = getSecuritySettings();
+    const input = document.getElementById('verifyPasswordInput').value;
+    
+    if (input !== security.password) {
+      showToast('密码错误');
+      document.getElementById('verifyPasswordInput').value = '';
+      return;
+    }
+    
+    document.getElementById('passwordVerifyModal').classList.remove('show');
+    document.getElementById('securityModal').classList.add('show');
+    document.getElementById('securityToggle').checked = true;
+    document.getElementById('securityPasswordSection').style.display = 'block';
+    document.getElementById('securityActionSection').style.display = 'none';
+    // 修改密码时预填安全问题
+    document.getElementById('securityQuestionInput').value = security.question;
+    document.getElementById('securityAnswerInput').value = security.answer;
+    document.getElementById('newPasswordInput').focus();
+  });
+
+  // 忘记密码（设置页面）
+  document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const security = getSecuritySettings();
+    console.log('设置页面忘记密码点击，安全问题:', security.question);
+    
+    if (!security.question) {
+      showToast('未设置安全问题');
+      return;
+    }
+    
+    document.getElementById('securityModal').classList.remove('show');
+    document.getElementById('forgotQuestionLabel').textContent = security.question;
+    document.getElementById('forgotAnswerInput').value = '';
+    document.getElementById('forgotNewPasswordInput').value = '';
+    document.getElementById('forgotConfirmPasswordInput').value = '';
+    document.getElementById('forgotPasswordModal').classList.add('show');
+    console.log('打开忘记密码弹窗');
+  });
+
+  document.getElementById('forgotPasswordCancel').addEventListener('click', () => {
+    document.getElementById('forgotPasswordModal').classList.remove('show');
+    // 重置步骤
+    document.getElementById('forgotStep1').style.display = 'block';
+    document.getElementById('forgotStep2').style.display = 'none';
+    document.getElementById('forgotPasswordNext').textContent = '下一步';
+    document.getElementById('forgotAnswerInput').value = '';
+    document.getElementById('forgotNewPasswordInput').value = '';
+    document.getElementById('forgotConfirmPasswordInput').value = '';
+  });
+
+  document.getElementById('forgotPasswordNext').addEventListener('click', () => {
+    const security = getSecuritySettings();
+    const step1 = document.getElementById('forgotStep1');
+    const step2 = document.getElementById('forgotStep2');
+    const btn = document.getElementById('forgotPasswordNext');
+    
+    // 第一步：验证安全问题
+    if (step1.style.display !== 'none') {
+      const answer = document.getElementById('forgotAnswerInput').value.trim();
+      
+      if (!answer) {
+        showToast('请输入安全问题答案', 'error');
+        return;
+      }
+      
+      if (answer !== security.answer) {
+        showToast('安全问题答案错误，请重新输入', 'error');
+        document.getElementById('forgotAnswerInput').value = '';
+        document.getElementById('forgotAnswerInput').focus();
+        return;
+      }
+      
+      // 答案正确，进入第二步
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      btn.textContent = '重置密码';
+      showToast('验证成功，请设置新密码', 'success');
+      return;
+    }
+    
+    // 第二步：设置新密码
+    const newPwd = document.getElementById('forgotNewPasswordInput').value;
+    const confirmPwd = document.getElementById('forgotConfirmPasswordInput').value;
+    
+    if (!newPwd || !/^\d{4,8}$/.test(newPwd)) {
+      showToast('请输入4-8位数字密码', 'error');
+      return;
+    }
+    
+    if (newPwd !== confirmPwd) {
+      showToast('两次密码不一致', 'error');
+      return;
+    }
+    
+    // 保存新密码
+    security.password = newPwd;
+    saveSecuritySettings(security);
+    
+    // 关闭弹窗
+    document.getElementById('forgotPasswordModal').classList.remove('show');
+    
+    // 重置步骤
+    document.getElementById('forgotStep1').style.display = 'block';
+    document.getElementById('forgotStep2').style.display = 'none';
+    btn.textContent = '下一步';
+    document.getElementById('forgotAnswerInput').value = '';
+    document.getElementById('forgotNewPasswordInput').value = '';
+    document.getElementById('forgotConfirmPasswordInput').value = '';
+    
+    showToast('密码重置成功', 'success');
+    
+    // 如果是锁屏界面，关闭锁屏
+    const lockScreen = document.getElementById('lockScreen');
+    if (lockScreen.style.display !== 'none') {
+      setTimeout(() => {
+        hideLockScreen();
+      }, 500);
+    }
+  });
+
+  // 密码显示切换
+  document.querySelectorAll('.password-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const targetId = toggle.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      const isPassword = input.type === 'password';
+      
+      input.type = isPassword ? 'text' : 'password';
+      
+      // 切换图标：闭眼=隐藏密码，睁眼=显示密码
+      if (isPassword) {
+        // 显示密码时使用睁眼图标
+        toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      } else {
+        // 隐藏密码时使用闭眼图标
+        toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.45 3.54M1 1l22 22"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/></svg>';
+      }
+    });
   });
 
   // ===== 初始化 =====
@@ -2447,6 +3411,11 @@ body {
   updateCategoryOptions();
   renderHome();
   renderSettings();
+  
+  // 安全设置初始化
+  const security = getSecuritySettings();
+  document.getElementById('securityStatus').textContent = security.enabled ? '已开启' : '已关闭';
+  checkSecurityOnStart();
 })();
 </script>
 </body>
