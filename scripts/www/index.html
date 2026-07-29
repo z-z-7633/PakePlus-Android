@@ -11,9 +11,9 @@
 
 /* ===== 主题系统 ===== */
 :root, [data-theme="blue"] {
-  --primary: #3B82F6; --primary-light: #EFF6FF;
-  --income: #10B981; --income-light: #ECFDF5;
-  --expense: #F43F5E; --expense-light: #FFF1F2;
+  --primary: #4188fc; --primary-light: #EFF6FF;
+  --income: #228B22; --income-light: #ECFDF5;
+  --expense: #ed0000; --expense-light: #FFF1F2;
   --bg: #F1F5F9; --card: #FFFFFF;
   --text: #1E293B; --text-secondary: #64748B; --text-muted: #94A3B8;
   --border: #E2E8F0;
@@ -21,25 +21,25 @@
   --radius: 12px; --radius-sm: 8px;
 }
 [data-theme="green"] {
-  --primary: #059669; --primary-light: #ECFDF5;
-  --income: #10B981; --income-light: #ECFDF5;
-  --expense: #DC2626; --expense-light: #FEF2F2;
+  --primary: #047857; --primary-light: #D1FAE5;
+  --income: #228B22; --income-light: #D1FAE5;
+  --expense: #ed0000; --expense-light: #FEF2F2;
   --bg: #F0FDF4; --card: #FFFFFF;
-  --text: #14532D; --text-secondary: #4D7C0F; --text-muted: #86EFAC;
-  --border: #BBF7D0;
+  --text: #14532D; --text-secondary: #047857; --text-muted: #10B981;
+  --border: #86EFAC;
 }
 [data-theme="purple"] {
   --primary: #7C3AED; --primary-light: #F5F3FF;
-  --income: #0D9488; --income-light: #F0FDFA;
-  --expense: #E11D48; --expense-light: #FFF1F2;
+  --income: #228B22; --income-light: #F0FDFA;
+  --expense: #ed0000; --expense-light: #FFF1F2;
   --bg: #FAF5FF; --card: #FFFFFF;
   --text: #1E1B4B; --text-secondary: #6D28D9; --text-muted: #A78BFA;
   --border: #DDD6FE;
 }
 [data-theme="dark"] {
   --primary: #60A5FA; --primary-light: #1E3A5F;
-  --income: #34D399; --income-light: #064E3B;
-  --expense: #FB7185; --expense-light: #4C0519;
+  --income: #228B22; --income-light: #064E3B;
+  --expense: #ed0000; --expense-light: #4C0519;
   --bg: #0F172A; --card: #1E293B;
   --text: #F1F5F9; --text-secondary: #94A3B8; --text-muted: #64748B;
   --border: #334155;
@@ -47,11 +47,38 @@
 }
 [data-theme="warm"] {
   --primary: #D97706; --primary-light: #FFFBEB;
-  --income: #16A34A; --income-light: #F0FDF4;
-  --expense: #DC2626; --expense-light: #FEF2F2;
+  --income: #228B22; --income-light: #F0FDF4;
+  --expense: #ed0000; --expense-light: #FEF2F2;
   --bg: #FFFBEB; --card: #FFFFFF;
   --text: #451A03; --text-secondary: #92400E; --text-muted: #D97706;
   --border: #FDE68A;
+}
+
+/* ===== 背景皮肤层 ===== */
+#bgSkinLayer {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -2;
+  display: none;
+}
+
+#bgSkinOverlay {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.75);
+  z-index: -1;
+  display: none;
+}
+
+[data-theme="dark"] #bgSkinOverlay {
+  background: rgba(15,23,42,0.75);
 }
 
 body {
@@ -59,6 +86,7 @@ body {
   background: var(--bg); color: var(--text);
   min-height: 100vh; max-width: 480px; margin: 0 auto;
   padding-bottom: 72px; overflow-x: hidden;
+  position: relative;
 }
 
 /* ===== Tab 内容区 ===== */
@@ -78,6 +106,7 @@ body {
   padding: 10px 0 8px; font-size: 11px; color: var(--text-muted);
   cursor: pointer; transition: color 0.2s; user-select: none; position: relative;
 }
+.tab-item:active { transform: scale(0.96); }
 .tab-item.active { color: var(--primary); }
 .tab-item.active::before {
   content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -96,6 +125,8 @@ body {
 .time-selector {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-bottom: 12px;
+  padding: 0 4px;
+  box-sizing: border-box;
 }
 .time-btn {
   width: 32px; height: 32px; border: none; border-radius: 50%;
@@ -103,13 +134,24 @@ body {
   font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.2s;
 }
-.time-btn:active { transform: scale(0.9); background: var(--primary-light); }
+.time-btn:active { transform: scale(0.96); background: var(--primary-light); }
 .month-input {
   padding: 6px 12px; border: 1.5px solid var(--border); border-radius: 20px;
   font-size: 13px; color: var(--text); background: var(--card); outline: none;
   cursor: pointer;
+  min-width: 130px;
+  text-align: center;
 }
 .month-input:focus { border-color: var(--primary); }
+.date-input {
+  padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 20px;
+  font-size: 12px; color: var(--text); background: var(--card); outline: none;
+  cursor: pointer;
+  min-width: 90px;
+  max-width: 110px;
+  text-align: center;
+}
+.date-input:focus { border-color: var(--primary); }
 
 .chart-header {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
@@ -123,6 +165,7 @@ body {
   font-size: 11px; color: var(--text-muted); background: transparent;
   cursor: pointer; transition: all 0.15s;
 }
+.toggle-btn:active { transform: scale(0.96); }
 .toggle-btn.active {
   border-color: var(--primary); color: var(--primary); background: var(--primary-light); font-weight: 600;
 }
@@ -138,6 +181,7 @@ body {
   font-size: 11px; color: var(--text-muted); background: transparent;
   cursor: pointer; transition: all 0.15s;
 }
+.dim-btn:active { transform: scale(0.96); }
 .dim-btn.active {
   background: var(--primary); color: #fff; font-weight: 600;
 }
@@ -163,9 +207,17 @@ body {
 .summary-card {
   background: var(--card); border-radius: var(--radius); padding: 12px 8px;
   text-align: center; box-shadow: var(--shadow);
+  overflow: hidden;
+  min-width: 0;
 }
 .summary-card .label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-.summary-card .amount { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.summary-card .amount {
+  font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
 .summary-card.income .amount { color: var(--income); }
 .summary-card.expense .amount { color: var(--expense); }
 .summary-card.balance .amount { color: var(--primary); }
@@ -178,7 +230,12 @@ body {
   content: ''; width: 3px; height: 14px; background: var(--primary);
   border-radius: 2px; display: inline-block;
 }
-.chart-wrapper { position: relative; max-width: 240px; margin: 0 auto; }
+.chart-wrapper {
+  position: relative;
+  max-width: 240px;
+  height: 240px;
+  margin: 0 auto;
+}
 .chart-empty { text-align: center; padding: 28px 0; color: var(--text-muted); font-size: 13px; }
 .category-legend {
   display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 12px; justify-content: center;
@@ -200,6 +257,8 @@ body {
   background: var(--card); border-radius: 8px;
   font-size: 12px; cursor: pointer; transition: all 0.2s;
   position: relative;
+  overflow: hidden;
+  min-width: 0;
 }
 .calendar-day:hover { background: var(--primary-light); }
 .calendar-day.empty { background: transparent; cursor: default; }
@@ -209,6 +268,10 @@ body {
 .calendar-day-amount {
   font-size: 9px; font-weight: 600; margin-top: 2px;
   font-variant-numeric: tabular-nums;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .calendar-day-amount.positive { color: var(--income); }
 .calendar-day-amount.negative { color: var(--expense); }
@@ -218,6 +281,7 @@ body {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 0; border-bottom: 1px solid var(--border);
 }
+.rank-item:active { transform: scale(0.96); }
 .rank-item:last-child { border-bottom: none; }
 .rank-badge {
   width: 24px; height: 24px; border-radius: 50%;
@@ -253,15 +317,19 @@ body {
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 5px; padding: 5px 0;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 .list-summary .summary-item {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 3px;
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
 }
 .list-summary .label {
-  font-size: 12px; color: var(--text-secondary); line-height: 1;
+  font-size: 11px; color: var(--text-secondary); line-height: 1;
 }
 .list-summary .value {
-  font-size: 14px; font-weight: 550; line-height: 1;
+  font-size: 12px; font-weight: 550; line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .list-summary .income .value { color: var(--income); }
@@ -278,7 +346,7 @@ body {
   padding: 6px 12px; cursor: pointer; font-size: 13px;
   color: var(--text-secondary); user-select: none;
 }
-.category-filter-header:active { background: var(--bg); }
+.category-filter-header:active { transform: scale(0.96); background: var(--bg); }
 .category-filter-header svg { flex-shrink: 0; }
 .category-filter-header.expanded svg { transform: rotate(180deg); }
 .category-filter-content {
@@ -318,15 +386,16 @@ body {
   cursor: pointer; transition: all 0.2s; background: var(--bg); color: var(--text-muted);
   border: none; outline: none;
 }
-.type-btn.active-expense { background: var(--expense); color: #fff; }
-.type-btn.active-income { background: var(--income); color: #fff; }
+.type-btn:active { transform: scale(0.96); }
+.type-btn.active-expense { background: #ffbebe; color: hsl(0, 96%, 19%); }
+.type-btn.active-income { background: #d1ffd1; color: #024305; }
 
 .submit-btn {
   width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
   background: var(--primary); color: #fff; font-size: 15px; font-weight: 600;
   cursor: pointer; transition: all 0.2s; margin-top: 4px;
 }
-.submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+.submit-btn:active { transform: scale(0.96); opacity: 0.9; }
 
 /* ===== 批量导入 ===== */
 .import-entry { margin-top: 14px; text-align: center; }
@@ -337,7 +406,7 @@ body {
   cursor: pointer; transition: all 0.2s;
 }
 .import-btn svg { width: 14px; height: 14px; }
-.import-btn:active { border-color: var(--primary); color: var(--primary); }
+.import-btn:active { transform: scale(0.96); border-color: var(--primary); color: var(--primary); }
 
 .import-choice-body {
   display: flex; gap: 12px; padding: 16px 0;
@@ -350,7 +419,7 @@ body {
 .import-choice-btn svg { width: 28px; height: 28px; color: var(--primary); }
 .import-choice-btn span { font-size: 13px; font-weight: 600; color: var(--text); }
 .import-choice-btn small { font-size: 11px; color: var(--text-muted); }
-.import-choice-btn:active { border-color: var(--primary); transform: scale(0.97); }
+.import-choice-btn:active { border-color: var(--primary); transform: scale(0.96); }
 
 .modal {
   position: fixed; inset: 0; background: rgba(0,0,0,0.35);
@@ -368,7 +437,7 @@ body {
   width: 28px; height: 28px; border: none; background: transparent;
   font-size: 20px; color: var(--text-muted); cursor: pointer; border-radius: 50%;
 }
-.modal-close:active { background: var(--bg); }
+.modal-close:active { transform: scale(0.96); background: var(--bg); }
 
 .import-table-wrapper {
   overflow-x: auto; padding: 0 12px; max-height: 55vh;
@@ -391,7 +460,7 @@ body {
   width: 24px; height: 24px; border: none; background: transparent;
   color: var(--text-muted); cursor: pointer; font-size: 16px; border-radius: 50%;
 }
-.import-table .row-del:active { background: var(--expense-light); color: var(--expense); }
+.import-table .row-del:active { transform: scale(0.96); background: var(--expense-light); color: var(--expense); }
 
 .import-actions {
   display: flex; justify-content: space-between; padding: 12px 16px;
@@ -401,12 +470,12 @@ body {
   padding: 8px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
   font-size: 13px; color: var(--text-secondary); background: var(--card); cursor: pointer;
 }
-.btn-secondary:active { background: var(--bg); }
+.btn-secondary:active { transform: scale(0.96); background: var(--bg); }
 .btn-primary {
   padding: 8px 20px; border: none; border-radius: var(--radius-sm);
   font-size: 13px; font-weight: 600; color: #fff; background: var(--primary); cursor: pointer;
 }
-.btn-primary:active { opacity: 0.85; }
+.btn-primary:active { transform: scale(0.96); opacity: 0.85; }
 
 /* ===== 记录列表 ===== */
 .list-top-bar {
@@ -420,7 +489,7 @@ body {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.2s;
 }
-.icon-btn:active { transform: scale(0.93); }
+.icon-btn:active { transform: scale(0.96); }
 .icon-btn svg { width: 18px; height: 18px; }
 
 /* 极简筛选条 */
@@ -433,7 +502,7 @@ body {
   cursor: pointer; transition: all 0.15s; white-space: nowrap; user-select: none;
 }
 .filter-chip.active { border-color: var(--primary); color: var(--primary); background: var(--primary-light); font-weight: 600; }
-.filter-chip:active { transform: scale(0.95); }
+.filter-chip:active { transform: scale(0.96); }
 
 .filter-date-row {
   display: flex; gap: 6px; align-items: center; margin-bottom: 10px;
@@ -517,7 +586,7 @@ body {
   box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 6px; cursor: pointer; transition: all 0.15s;
 }
-.settings-item:active { transform: scale(0.99); }
+.settings-item:active { transform: scale(0.96); }
 .settings-item .left { display: flex; align-items: center; gap: 10px; }
 .settings-item .left svg { width: 20px; height: 20px; color: var(--primary); flex-shrink: 0; }
 .settings-item .item-label { font-size: 14px; font-weight: 500; }
@@ -556,6 +625,7 @@ body {
   transition: color 0.2s;
 }
 .password-toggle:hover { color: var(--text-secondary); }
+.password-toggle:active { transform: translateY(-50%) scale(0.96); }
 .password-toggle svg { width: 18px; height: 18px; }
 
 /* 数字键盘 */
@@ -570,7 +640,7 @@ body {
   margin: 0 auto;
 }
 .numpad-key:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
   background: var(--primary-light);
 }
 
@@ -591,6 +661,7 @@ body {
   aspect-ratio: 1; border-radius: 50%; cursor: pointer; position: relative;
   border: 3px solid transparent; transition: all 0.2s;
 }
+.theme-dot:active { transform: scale(0.96); }
 .theme-dot.active { border-color: var(--text); transform: scale(1.1); }
 .theme-dot::after {
   content: attr(data-name); position: absolute; bottom: -16px; left: 50%;
@@ -600,8 +671,21 @@ body {
 /* 分类管理 */
 .category-manage-list { display: flex; flex-direction: column; gap: 6px; }
 .category-manage-item {
-  display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+  display: flex; align-items: center; gap: 6px; padding: 8px 1px;
   background: var(--bg); border-radius: var(--radius-sm);
+}
+.category-manage-item .cat-drag {
+  cursor: grab;
+  color: var(--text-muted);
+  padding: 2px;
+  margin-left: -2px;
+}
+.category-manage-item .cat-drag:active {
+  cursor: grabbing;
+}
+.category-manage-item.dragging {
+  opacity: 0.5;
+  background: var(--primary-light);
 }
 .category-manage-item .cat-icon { font-size: 18px; }
 .category-manage-item .cat-name { flex: 1; font-size: 13px; font-weight: 500; }
@@ -611,6 +695,7 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .category-manage-item .cat-del:hover { color: var(--expense); background: var(--expense-light); }
+.category-manage-item .cat-del:active { transform: scale(0.96); }
 .add-category-row { display: flex; gap: 6px; margin-top: 8px; }
 .add-category-row input {
   flex: 1; padding: 7px 10px; border: 1.5px solid var(--border);
@@ -623,6 +708,7 @@ body {
   background: var(--primary); color: #fff; font-size: 13px; font-weight: 600;
   cursor: pointer;
 }
+.add-category-row button:active { transform: scale(0.96); }
 
 /* ===== 弹窗 ===== */
 .modal-overlay {
@@ -644,7 +730,7 @@ body {
   flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm);
   font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
 }
-.modal-actions button:active { transform: scale(0.97); }
+.modal-actions button:active { transform: scale(0.96); }
 .btn-cancel { background: var(--bg); color: var(--text-secondary); }
 .btn-confirm { background: var(--primary); color: #fff; }
 .btn-danger { background: var(--expense); color: #fff; }
@@ -670,12 +756,22 @@ body {
 </style>
 </head>
 <body>
+<!-- 背景皮肤层 -->
+<div id="bgSkinLayer"></div>
+<div id="bgSkinOverlay"></div>
 
 <!-- ===== 首页 ===== -->
 <div id="page-home" class="tab-content active">
   <div class="time-selector">
     <button class="time-btn" id="btnPrevMonth">‹</button>
-    <input type="month" id="monthPicker" class="month-input">
+    <div id="monthModeSelector" style="flex:1;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="双击切换时间范围模式">
+      <input type="month" id="monthPicker" class="month-input">
+    </div>
+    <div id="rangeModeSelector" style="display:none;flex:1;align-items:center;justify-content:center;gap:6px;cursor:pointer;" title="双击切换月份模式">
+      <input type="date" id="startDatePicker" class="date-input" style="flex:1;">
+      <span style="color:var(--text-muted); font-size: 13px;">至</span>
+      <input type="date" id="endDatePicker" class="date-input" style="flex:1;">
+    </div>
     <button class="time-btn" id="btnNextMonth">›</button>
   </div>
   <div class="summary-cards">
@@ -730,7 +826,7 @@ body {
   </div>
   
   <!-- 日历模块 -->
-  <div class="card chart-section">
+  <div class="card chart-section" id="calendarSection">
     <h3>每日统计</h3>
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
@@ -892,6 +988,18 @@ body {
         <div class="theme-dot" data-theme="warm" data-name="暖" style="background:#D97706;"></div>
         <div class="theme-dot" data-theme="dark" data-name="暗" style="background:#1E293B;"></div>
       </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px;">背景皮肤</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="btn-primary" id="btnUploadBg" style="flex:1;padding:8px 12px;font-size:13px;">上传图片</button>
+        <button class="btn-secondary" id="btnRemoveBg" style="flex:1;padding:8px 12px;font-size:13px;">删除背景</button>
+      </div>
+      <div id="bgPreviewContainer" style="margin-top:12px;display:none;">
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">当前背景预览:</div>
+        <div id="bgPreview" style="width:100%;height:100px;border-radius:8px;background-size:cover;background-position:center;border:1px solid var(--border);"></div>
+      </div>
+      <input type="file" id="fileBgInput" accept="image/*" style="display:none;">
     </div>
   </div>
 
@@ -1322,10 +1430,8 @@ body {
   function saveCategories(c) { save(KEYS.categories, c); }
 
   function getMonthRecords(year, month) {
-    return getAllRecords().filter(r => {
-      const d = new Date(r.date);
-      return d.getFullYear() === year && d.getMonth() === month;
-    });
+    const monthStr = year + '-' + String(month + 1).padStart(2, '0');
+    return getAllRecords().filter(r => r.date.startsWith(monthStr));
   }
 
   // ===== 工具 =====
@@ -1412,8 +1518,11 @@ body {
   let pieChart = null;
   let lineChart = null;
   let homeFilter = {
+    mode: 'month', // 'month' 或 'range'
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
+    startDate: null,
+    endDate: null,
     pieType: 'expense',
     lineType: 'expense',
     lineDimension: 'day',
@@ -1425,14 +1534,45 @@ body {
     const s = getSettings();
     document.title = s.accountName;
 
-    // 更新时间选择器
+    // 更新时间选择器显示
+    const monthModeSelector = document.getElementById('monthModeSelector');
+    const rangeModeSelector = document.getElementById('rangeModeSelector');
     const monthPicker = document.getElementById('monthPicker');
-    monthPicker.value = homeFilter.year + '-' + String(homeFilter.month).padStart(2, '0');
+    const startDatePicker = document.getElementById('startDatePicker');
+    const endDatePicker = document.getElementById('endDatePicker');
+    const btnPrevMonth = document.getElementById('btnPrevMonth');
+    const btnNextMonth = document.getElementById('btnNextMonth');
 
-    // 获取当前选择月份的记录
-    const records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+    if (homeFilter.mode === 'month') {
+      monthModeSelector.style.display = 'flex';
+      rangeModeSelector.style.display = 'none';
+      monthPicker.value = homeFilter.year + '-' + String(homeFilter.month).padStart(2, '0');
+      // 月份模式下显示左右箭头
+      if (btnPrevMonth) btnPrevMonth.style.display = 'flex';
+      if (btnNextMonth) btnNextMonth.style.display = 'flex';
+    } else {
+      monthModeSelector.style.display = 'none';
+      rangeModeSelector.style.display = 'flex';
+      // 如果没有设置日期范围，初始化为当月
+      if (!homeFilter.startDate || !homeFilter.endDate) {
+        initDateRangePicker();
+      }
+      startDatePicker.value = homeFilter.startDate;
+      endDatePicker.value = homeFilter.endDate;
+      // 时间范围模式下隐藏左右箭头
+      if (btnPrevMonth) btnPrevMonth.style.display = 'none';
+      if (btnNextMonth) btnNextMonth.style.display = 'none';
+    }
+
+    // 获取记录（根据模式）
+    let records;
+    if (homeFilter.mode === 'month') {
+      records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+    } else {
+      records = getRecordsByDateRange(homeFilter.startDate, homeFilter.endDate);
+    }
+
     let totalIncome = 0, totalExpense = 0;
-
     records.forEach(r => {
       if (r.type === 'income') totalIncome += r.amount;
       else totalExpense += r.amount;
@@ -1442,14 +1582,86 @@ body {
     document.getElementById('totalExpense').textContent = formatMoneyRaw(totalExpense);
     document.getElementById('totalBalance').textContent = formatMoneyRaw(totalIncome - totalExpense);
 
+    // 自适应总计卡片字体大小
+    adjustSummaryCardsFontSize();
+
     renderPieChart(records);
     renderLineChart();
     renderCalendar();
     renderRankList();
   }
 
+  // 自适应首页总计卡片字体大小
+  let adjustSummaryCardsTimeout = null;
+  function adjustSummaryCardsFontSize() {
+    // 使用防抖，避免频繁调用
+    if (adjustSummaryCardsTimeout) {
+      clearTimeout(adjustSummaryCardsTimeout);
+    }
+    
+    adjustSummaryCardsTimeout = setTimeout(() => {
+      const cards = document.querySelectorAll('.summary-card');
+      if (!cards.length) return;
+      
+      let fontSize = 18;
+      const minFontSize = 12;
+      const maxIterations = 10;
+      let iterations = 0;
+      
+      // 应用初始字体大小
+      cards.forEach(card => {
+        const amount = card.querySelector('.amount');
+        if (amount) amount.style.fontSize = fontSize + 'px';
+      });
+      
+      // 检查是否溢出，逐步减小字体直到适合
+      while (iterations < maxIterations) {
+        let hasOverflow = false;
+        
+        cards.forEach(card => {
+          const amount = card.querySelector('.amount');
+          if (!amount) return;
+          
+          // 检查是否溢出
+          if (amount.scrollWidth > amount.clientWidth) {
+            hasOverflow = true;
+          }
+        });
+        
+        // 如果没有溢出，停止调整
+        if (!hasOverflow) break;
+        
+        // 减小字体大小
+        fontSize = Math.max(minFontSize, fontSize - 1);
+        
+        cards.forEach(card => {
+          const amount = card.querySelector('.amount');
+          if (amount) amount.style.fontSize = fontSize + 'px';
+        });
+        
+        iterations++;
+      }
+      
+      adjustSummaryCardsTimeout = null;
+    }, 50);
+  }
+
   // 日历模块
   function renderCalendar() {
+    const calendarSection = document.getElementById('calendarSection');
+
+    // 时间范围模式下隐藏日历
+    if (homeFilter.mode === 'range') {
+      if (calendarSection) {
+        calendarSection.style.display = 'none';
+      }
+      return;
+    }
+
+    if (calendarSection) {
+      calendarSection.style.display = 'block';
+    }
+
     const year = homeFilter.year;
     const month = homeFilter.month - 1; // homeFilter.month是1-12，Date需要0-11
 
@@ -1588,9 +1800,12 @@ body {
 
   // 金额排行榜
   function renderRankList() {
-    const year = homeFilter.year;
-    const month = homeFilter.month;
-    const records = getMonthRecords(year, month - 1);
+    let records;
+    if (homeFilter.mode === 'month') {
+      records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+    } else {
+      records = getRecordsByDateRange(homeFilter.startDate, homeFilter.endDate);
+    }
     const filteredRecords = records.filter(r => r.type === homeFilter.rankType);
 
     const rankList = document.getElementById('rankList');
@@ -1614,7 +1829,7 @@ body {
     const maxAmount = catEntries[0][1];
     const total = catEntries.reduce((sum, entry) => sum + entry[1], 0);
 
-    const categories = homeFilter.rankType === 'expense' ? DEFAULT_CATEGORIES.expense : DEFAULT_CATEGORIES.income;
+    const categories = homeFilter.rankType === 'expense' ? getCategories().expense : getCategories().income;
     const categoryColorMap = {};
     categories.forEach(c => { categoryColorMap[c.value] = c.color; });
 
@@ -1657,9 +1872,12 @@ body {
 
   // 显示分类明细
   function showCategoryDetails(category) {
-    const year = homeFilter.year;
-    const month = homeFilter.month;
-    const records = getMonthRecords(year, month - 1);
+    let records;
+    if (homeFilter.mode === 'month') {
+      records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+    } else {
+      records = getRecordsByDateRange(homeFilter.startDate, homeFilter.endDate);
+    }
     const type = homeFilter.rankType;
 
     const categoryRecords = records.filter(r => r.type === type && r.category === category);
@@ -1776,7 +1994,9 @@ body {
       type: 'doughnut',
       data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: cardBg || '#fff', hoverOffset: 6 }] },
       options: {
-        responsive: true, maintainAspectRatio: true, cutout: '55%',
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: function(ctx) {
@@ -1828,18 +2048,28 @@ body {
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
   function dateStr(y, m, d) { return y + '-' + pad2(m) + '-' + pad2(d); }
 
+  // 存储折线图日期标签（用于双击查看明细）
+  let lineChartDateLabels = [];
+
   function updateLineChart() {
     const chartArea = document.getElementById('lineChartArea');
     const chartEmpty = document.getElementById('lineChartEmpty');
     const canvas = document.getElementById('lineChart');
 
-    // 获取所有记录
-    const allRecords = getAllRecords();
+    // 获取记录（根据模式）
+    let allRecords;
+    if (homeFilter.mode === 'month') {
+      allRecords = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+    } else {
+      allRecords = getRecordsByDateRange(homeFilter.startDate, homeFilter.endDate);
+    }
+
     const dimension = homeFilter.lineDimension;
     const type = homeFilter.lineType;
     const category = homeFilter.lineCategory;
     const labels = [];
     const data = [];
+    const dateLabels = []; // 存储每个数据点对应的日期（仅天维度）
 
     // 根据类型和分类过滤记录
     const filteredRecords = allRecords.filter(r => {
@@ -1849,33 +2079,85 @@ body {
     });
 
     if (dimension === 'day') {
-      // 显示当前月份的每一天
-      const year = homeFilter.year;
-      const month = homeFilter.month;
-      const daysInMonth = new Date(year, month, 0).getDate();
+      if (homeFilter.mode === 'month') {
+        // 显示当前月份的每一天
+        const year = homeFilter.year;
+        const month = homeFilter.month;
+        const daysInMonth = new Date(year, month, 0).getDate();
 
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
-        labels.push(day + '日');
-        const sum = filteredRecords
-          .filter(r => r.date === dateStr)
-          .reduce((acc, r) => acc + r.amount, 0);
-        data.push(sum);
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
+          labels.push(day + '日');
+          dateLabels.push(dateStr);
+          const sum = filteredRecords
+            .filter(r => r.date === dateStr)
+            .reduce((acc, r) => acc + r.amount, 0);
+          data.push(sum);
+        }
+      } else {
+        // 时间范围模式：显示范围内的每一天
+        const startDate = new Date(homeFilter.startDate);
+        const endDate = new Date(homeFilter.endDate);
+        const currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth() + 1;
+          const day = currentDate.getDate();
+          const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
+          labels.push(day + '日');
+          dateLabels.push(dateStr);
+          const sum = filteredRecords
+            .filter(r => r.date === dateStr)
+            .reduce((acc, r) => acc + r.amount, 0);
+          data.push(sum);
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
       }
     } else if (dimension === 'month') {
+      // 获取所有历史记录用于趋势分析
+      const allHistoryRecords = getAllRecords().filter(r => {
+        if (r.type !== type) return false;
+        if (category !== 'all' && r.category !== category) return false;
+        return true;
+      });
+      // 根据模式确定参考点
+      let refYear, refMonth;
+      if (homeFilter.mode === 'month') {
+        refYear = homeFilter.year;
+        refMonth = homeFilter.month - 1;
+      } else {
+        // range模式：使用结束日期作为参考点
+        const endDate = new Date(homeFilter.endDate);
+        refYear = endDate.getFullYear();
+        refMonth = endDate.getMonth();
+      }
       for (let i = 11; i >= 0; i--) {
-        const d = new Date(homeFilter.year, homeFilter.month - 1 - i, 1);
+        const d = new Date(refYear, refMonth - i, 1);
         const y = d.getFullYear();
         const m = d.getMonth();
         const prefix = y + '-' + pad2(m + 1);
         labels.push((m + 1) + '月');
-        const sum = filteredRecords
+        const sum = allHistoryRecords
           .filter(r => r.date && r.date.startsWith(prefix))
           .reduce((acc, r) => acc + r.amount, 0);
         data.push(sum);
       }
     } else if (dimension === 'week') {
-      const refDate = new Date(homeFilter.year, homeFilter.month - 1, 15);
+      // 获取所有历史记录用于趋势分析
+      const allHistoryRecords = getAllRecords().filter(r => {
+        if (r.type !== type) return false;
+        if (category !== 'all' && r.category !== category) return false;
+        return true;
+      });
+      // 根据模式确定参考点
+      let refDate;
+      if (homeFilter.mode === 'month') {
+        refDate = new Date(homeFilter.year, homeFilter.month - 1, 15);
+      } else {
+        // range模式：使用结束日期作为参考点
+        refDate = new Date(homeFilter.endDate);
+      }
       for (let i = 11; i >= 0; i--) {
         const ws = new Date(refDate);
         ws.setDate(refDate.getDate() - refDate.getDay() - i * 7);
@@ -1884,16 +2166,31 @@ body {
         const wsStr = dateStr(ws.getFullYear(), ws.getMonth() + 1, ws.getDate());
         const weStr = dateStr(we.getFullYear(), we.getMonth() + 1, we.getDate());
         labels.push((ws.getMonth() + 1) + '/' + ws.getDate());
-        const sum = filteredRecords
+        const sum = allHistoryRecords
           .filter(r => r.date >= wsStr && r.date <= weStr)
           .reduce((acc, r) => acc + r.amount, 0);
         data.push(sum);
       }
     } else if (dimension === 'year') {
+      // 获取所有历史记录用于趋势分析
+      const allHistoryRecords = getAllRecords().filter(r => {
+        if (r.type !== type) return false;
+        if (category !== 'all' && r.category !== category) return false;
+        return true;
+      });
+      // 根据模式确定参考点
+      let refYear;
+      if (homeFilter.mode === 'month') {
+        refYear = homeFilter.year;
+      } else {
+        // range模式：使用结束日期作为参考点
+        const endDate = new Date(homeFilter.endDate);
+        refYear = endDate.getFullYear();
+      }
       for (let i = 4; i >= 0; i--) {
-        const y = homeFilter.year - i;
+        const y = refYear - i;
         labels.push(y + '年');
-        const sum = filteredRecords
+        const sum = allHistoryRecords
           .filter(r => r.date && r.date.startsWith('' + y))
           .reduce((acc, r) => acc + r.amount, 0);
         data.push(sum);
@@ -1914,7 +2211,7 @@ body {
     const cs = getComputedStyle(document.documentElement);
     const primaryColor = cs.getPropertyValue('--primary').trim();
     const isExpense = type === 'expense';
-    const lineColor = isExpense ? '#F43F5E' : '#10B981';
+    const lineColor = isExpense ? '#ed0000' : '#228B22';
     const cardBg = cs.getPropertyValue('--card').trim() || '#fff';
 
     // 创建渐变
@@ -1935,7 +2232,7 @@ body {
           backgroundColor: gradient,
           borderWidth: 1,
           fill: true,
-          tension: 0.4,
+          tension: 0.6,
           pointRadius: 2,
           pointBackgroundColor: cardBg,
           pointBorderColor: lineColor,
@@ -1987,12 +2284,87 @@ body {
         }
       }
     });
+
+    // 保存日期标签供双击使用
+    lineChartDateLabels = dimension === 'day' ? dateLabels : [];
+  }
+
+  // 折线图双击查看当日明细（只绑定一次）
+  const lineChartCanvas = document.getElementById('lineChart');
+  if (!lineChartCanvas._dblClickBound) {
+    lineChartCanvas._dblClickBound = true;
+    lineChartCanvas.addEventListener('dblclick', (e) => {
+      if (!lineChart || lineChartDateLabels.length === 0) return;
+
+      const rect = lineChartCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const chartAreaBounds = { left: lineChart.chartArea.left, right: lineChart.chartArea.right };
+
+      // 计算点击位置对应的数据点索引
+      if (x >= chartAreaBounds.left && x <= chartAreaBounds.right) {
+        const labels = lineChart.data.labels;
+        const index = Math.round((x - chartAreaBounds.left) / ((chartAreaBounds.right - chartAreaBounds.left) / (labels.length - 1)));
+        const clampedIndex = Math.max(0, Math.min(index, labels.length - 1));
+        const date = lineChartDateLabels[clampedIndex];
+        if (date) {
+          showDayDetails(date);
+        }
+      }
+    });
   }
 
   function renderLineChart() {
     renderLineCategoryChips();
     updateLineChart();
   }
+
+  // 根据日期范围获取记录
+  function getRecordsByDateRange(startDate, endDate) {
+    const records = getAllRecords();
+    if (!startDate || !endDate) return records;
+
+    return records.filter(r => {
+      return r.date >= startDate && r.date <= endDate;
+    });
+  }
+
+  // 初始化时间范围选择器默认值（当月第一天到最后一天）
+  function initDateRangePicker() {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const startDate = firstDay.toISOString().split('T')[0];
+    const endDate = lastDay.toISOString().split('T')[0];
+
+    homeFilter.startDate = startDate;
+    homeFilter.endDate = endDate;
+
+    document.getElementById('startDatePicker').value = startDate;
+    document.getElementById('endDatePicker').value = endDate;
+  }
+
+  // 双击月份选择器切换到时间范围模式
+  document.getElementById('monthModeSelector').addEventListener('dblclick', () => {
+    if (homeFilter.mode === 'month') {
+      homeFilter.mode = 'range';
+      // 切换到时间范围模式时，初始化为当月
+      if (!homeFilter.startDate || !homeFilter.endDate) {
+        initDateRangePicker();
+      }
+      renderHome();
+    }
+  });
+
+  // 双击时间范围选择器切换到月份模式
+  document.getElementById('rangeModeSelector').addEventListener('dblclick', () => {
+    if (homeFilter.mode === 'range') {
+      homeFilter.mode = 'month';
+      homeFilter.startDate = null;
+      homeFilter.endDate = null;
+      renderHome();
+    }
+  });
 
   // 时间选择器事件
   document.getElementById('monthPicker').addEventListener('change', e => {
@@ -2002,22 +2374,37 @@ body {
     renderHome();
   });
 
-  document.getElementById('btnPrevMonth').addEventListener('click', () => {
-    homeFilter.month--;
-    if (homeFilter.month < 1) {
-      homeFilter.month = 12;
-      homeFilter.year--;
-    }
+  // 日期范围选择器事件
+  document.getElementById('startDatePicker').addEventListener('change', e => {
+    homeFilter.startDate = e.target.value;
     renderHome();
   });
 
-  document.getElementById('btnNextMonth').addEventListener('click', () => {
-    homeFilter.month++;
-    if (homeFilter.month > 12) {
-      homeFilter.month = 1;
-      homeFilter.year++;
-    }
+  document.getElementById('endDatePicker').addEventListener('change', e => {
+    homeFilter.endDate = e.target.value;
     renderHome();
+  });
+
+  document.getElementById('btnPrevMonth').addEventListener('click', () => {
+    if (homeFilter.mode === 'month') {
+      homeFilter.month--;
+      if (homeFilter.month < 1) {
+        homeFilter.month = 12;
+        homeFilter.year--;
+      }
+      renderHome();
+    }
+  });
+
+  document.getElementById('btnNextMonth').addEventListener('click', () => {
+    if (homeFilter.mode === 'month') {
+      homeFilter.month++;
+      if (homeFilter.month > 12) {
+        homeFilter.month = 1;
+        homeFilter.year++;
+      }
+      renderHome();
+    }
   });
 
   // 饼图收支切换
@@ -2026,7 +2413,12 @@ body {
       document.querySelectorAll('.toggle-btn[data-chart-type="pie"]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       homeFilter.pieType = btn.dataset.chartTarget;
-      const records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+      let records;
+      if (homeFilter.mode === 'month') {
+        records = getMonthRecords(homeFilter.year, homeFilter.month - 1);
+      } else {
+        records = getRecordsByDateRange(homeFilter.startDate, homeFilter.endDate);
+      }
       renderPieChart(records);
     });
   });
@@ -2516,6 +2908,9 @@ body {
     document.getElementById('listIncome').textContent = formatMoneyRaw(totalIncome);
     document.getElementById('listExpense').textContent = formatMoneyRaw(totalExpense);
     document.getElementById('listBalance').textContent = formatMoneyRaw(totalIncome - totalExpense);
+    
+    // 自适应字体大小
+    adjustSummaryFontSize();
 
     const listEl = document.getElementById('recordList');
     const emptyEl = document.getElementById('listEmpty');
@@ -2571,6 +2966,49 @@ body {
     const month = parseInt(parts[1]);
     const day = parseInt(parts[2]);
     return month + '月' + day + '日';
+  }
+
+  // 自适应汇总数据字体大小
+  let adjustSummaryTimeout = null;
+  function adjustSummaryFontSize() {
+    // 使用防抖，避免频繁调用
+    if (adjustSummaryTimeout) {
+      clearTimeout(adjustSummaryTimeout);
+    }
+    
+    adjustSummaryTimeout = setTimeout(() => {
+      const container = document.getElementById('listSummary');
+      if (!container) return;
+      
+      const labels = container.querySelectorAll('.label');
+      const values = container.querySelectorAll('.value');
+      
+      // 重置为默认字体大小
+      let labelFontSize = 11;
+      let valueFontSize = 12;
+      
+      labels.forEach(el => el.style.fontSize = labelFontSize + 'px');
+      values.forEach(el => el.style.fontSize = valueFontSize + 'px');
+      
+      // 使用requestAnimationFrame确保在下一帧执行
+      requestAnimationFrame(() => {
+        // 检查是否溢出
+        const containerWidth = container.offsetWidth;
+        const contentWidth = container.scrollWidth;
+        
+        if (contentWidth > containerWidth) {
+          // 计算需要的缩放比例
+          const scale = containerWidth / contentWidth;
+          labelFontSize = Math.max(9, Math.floor(11 * scale));
+          valueFontSize = Math.max(10, Math.floor(12 * scale));
+          
+          labels.forEach(el => el.style.fontSize = labelFontSize + 'px');
+          values.forEach(el => el.style.fontSize = valueFontSize + 'px');
+        }
+      });
+      
+      adjustSummaryTimeout = null;
+    }, 50);
   }
 
   // 类型筛选点击
@@ -2865,52 +3303,85 @@ body {
     const cats = getCategories();
     let editType = 'expense';
 
-    const iconList = ['📌','⭐','🔖','💎','🎯','🏷️','✨','🔥','💡','📚','🎵','🎮','🏠','🚗','💰','🎁','📱','💻','☕','🍔'];
-    const colorList = [
-      { value: '#F97316', name: '橙色' },
-      { value: '#3B82F6', name: '蓝色' },
-      { value: '#EC4899', name: '粉色' },
-      { value: '#8B5CF6', name: '紫色' },
-      { value: '#06B6D4', name: '青色' },
-      { value: '#10B981', name: '绿色' },
-      { value: '#F59E0B', name: '黄色' },
-      { value: '#6366F1', name: '靛蓝' },
-      { value: '#EF4444', name: '红色' },
-      { value: '#14B8A6', name: '蓝绿' },
-      { value: '#F43F5E', name: '玫红' },
-      { value: '#84CC16', name: '黄绿' }
-    ];
+    const iconList = ['📌','⭐','🔖','💎','🎯','🏷️','✨','🔥','💡','📚','🎵','🎮','🏠','🚗','💰','🎁','📱','💻','☕','🍔','🌟','🎨','🛒','💼','🌈','🎬','🍰','⚽'];
+    // 颜色体系: 10种颜色,每种5个深浅程度
+    const colorPalette = {
+      red: ['#FF6B6B', '#EF4444', '#DC2626', '#B91C1C', '#991B1B'],      // 红色
+      orange: ['#FFA726', '#FB923C', '#F97316', '#EA580C', '#C2410C'],   // 橙色
+      yellow: ['#FFD54F', '#FFCA28', '#F59E0B', '#D97706', '#B45309'],   // 黄色
+      green: ['#6EE7B7', '#34D399', '#10B981', '#059669', '#047857'],    // 绿色
+      teal: ['#5EEAD4', '#2DD4BF', '#14B8A6', '#0D9488', '#0F766E'],     // 蓝绿
+      cyan: ['#67E8F9', '#22D3EE', '#06B6D4', '#0891B2', '#0E7490'],     // 青色
+      blue: ['#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF'],     // 蓝色
+      purple: ['#A78BFA', '#8B5CF6', '#7C3AED', '#6D28D9', '#5B21B6'],    // 紫色
+      pink: ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9D174D'],      // 粉色
+      rose: ['#FB7185', '#F43F5E', '#E11D48', '#BE123C', '#9F1239']      // 玫红
+    };
 
     function buildCatHTML() {
       const list = cats[editType];
 
-      // 图标下拉框
-      let iconSelectHtml = '<select id="iconSelect" style="width:48px;padding:6px 2px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;text-align:center;">';
-      iconList.forEach(icon => {
-        iconSelectHtml += '<option value="' + icon + '">' + icon + '</option>';
-      });
-      iconSelectHtml += '</select>';
+      // 默认选中的图标
+      const defaultIcon = '📌';
 
-      // 颜色下拉框
-      let colorSelectHtml = '<select id="colorSelect" style="width:50px;padding:6px 4px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;">';
-      colorList.forEach(c => {
-        colorSelectHtml += '<option value="' + c.value + '">' + c.name + '</option>';
-      });
-      colorSelectHtml += '</select>';
+      // 图标选择器(可折叠)
+      let iconSelectHtml =
+        '<div id="iconPickerWrapper" style="position:relative;width:48px;height:36px;">' +
+          '<div id="iconPickerPreview" style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--card);border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;position:relative;">' +
+            '<span id="iconPreviewEmoji" style="font-size:18px;">' + defaultIcon + '</span>' +
+            '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;right:4px;bottom:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+          '</div>' +
+          '<div id="iconPickerDropdown" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:200px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow-md);display:none;z-index:10;">' +
+            // 图标网格: 7列4行
+            Array.from({length: 4}, (_, row) =>
+              '<div style="display:flex;gap:3px;margin-bottom:3px;">' +
+                iconList.slice(row * 7, row * 7 + 7).map((icon, i) =>
+                  '<div class="icon-item" data-icon="' + icon + '" style="width:24px;height:24px;border-radius:var(--radius-sm);background:' + (icon === defaultIcon ? 'var(--primary-light)' : 'var(--bg)') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;border:2px solid ' + (icon === defaultIcon ? 'var(--primary)' : 'transparent') + ';">' + icon + '</div>'
+                ).join('') +
+              '</div>'
+            ).join('') +
+          '</div>' +
+        '</div>';
+
+      // 默认选中的颜色
+      const defaultColor = '#F97316';
+
+      // 颜色色板选择器(可折叠)
+      let colorPaletteHtml =
+        '<div id="colorPickerWrapper" style="position:relative;width:48px;height:36px;">' +
+          '<div id="colorPickerPreview" style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--card);border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;position:relative;">' +
+            '<div id="colorPreviewDot" style="width:10px;height:10px;border-radius:50%;background:' + defaultColor + ';"></div>' +
+            '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;right:4px;bottom:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+          '</div>' +
+          '<div id="colorPaletteDropdown" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:195px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow-md);display:none;z-index:10;">' +
+            // 横向:深浅程度(5列),纵向:颜色种类(10行)
+            Array.from({length: 5}, (_, depth) =>
+              '<div style="display:flex;gap:1px;margin-bottom:1px;">' +
+                Object.values(colorPalette).map((colors) =>
+                  '<div class="palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === defaultColor ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+                ).join('') +
+              '</div>'
+            ).join('') +
+          '</div>' +
+        '</div>';
 
       return '<div style="display:flex;gap:6px;margin-bottom:10px;">' +
         '<button class="btn-confirm" id="catTypeExpense" style="flex:1;padding:7px;font-size:13px;' + (editType === 'expense' ? '' : 'background:var(--bg);color:var(--text-secondary);') + '">支出分类</button>' +
         '<button class="btn-confirm" id="catTypeIncome" style="flex:1;padding:7px;font-size:13px;' + (editType === 'income' ? '' : 'background:var(--bg);color:var(--text-secondary);') + '">收入分类</button>' +
       '</div>' +
       '<div class="category-manage-list">' +
-        list.map((c, i) => '<div class="category-manage-item"><span class="cat-icon">' + c.icon + '</span><span class="cat-name">' + escapeHtml(c.value) + '</span>' +
+        list.map((c, i) => '<div class="category-manage-item" draggable="true" data-idx="' + i + '">' +
+          '<span class="cat-drag"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="8" y2="6"/><line x1="16" y1="6" x2="16" y2="6"/><line x1="8" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="16" y2="12"/><line x1="8" y1="18" x2="8" y2="18"/><line x1="16" y1="18" x2="16" y2="18"/></svg></span>' +
+          '<span class="cat-color-dot" style="width:12px;height:12px;border-radius:50%;background:' + c.color + ';flex-shrink:0;"></span>' +
+          '<span class="cat-icon">' + c.icon + '</span><span class="cat-name">' + escapeHtml(c.value) + '</span>' +
+          '<button class="cat-edit" data-idx="' + i + '" style="width:26px;height:26px;border:none;background:none;color:var(--text-muted);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
           (c.value !== '其他' ? '<button class="cat-del" data-idx="' + i + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' : '') +
         '</div>').join('') +
       '</div>' +
-      '<style>#iconSelect,#colorSelect{max-height:50px;}</style>' +
+      '<style>.palette-color:active{transform:scale(0.9);}.icon-item:hover,.edit-icon-item:hover{opacity:0.8;}.icon-item:active,.edit-icon-item:active{transform:scale(0.95);}#colorPickerPreview:active,#iconPickerPreview:active{opacity:0.8;}.cat-edit:hover{color:var(--primary);background:var(--primary-light);}</style>' +
       '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;display:flex;gap:6px;">' +
         iconSelectHtml +
-        colorSelectHtml +
+        colorPaletteHtml +
         '<input type="text" id="newCatInput" placeholder="新分类名称" maxlength="10" style="flex:1;min-width:0;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;height:36px;box-sizing:border-box;">' +
         '<button id="addCatBtn" style="padding:0 14px;border:none;border-radius:var(--radius-sm);background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;height:36px;line-height:36px;">添加</button>' +
       '</div>';
@@ -2923,6 +3394,288 @@ body {
     function bindCatEvents() {
       document.getElementById('catTypeExpense').addEventListener('click', () => { editType = 'expense'; document.getElementById('genericModalBody').innerHTML = buildCatHTML(); bindCatEvents(); });
       document.getElementById('catTypeIncome').addEventListener('click', () => { editType = 'income'; document.getElementById('genericModalBody').innerHTML = buildCatHTML(); bindCatEvents(); });
+
+      // 图标选择器事件
+      let selectedIcon = '📌';
+      const iconPickerPreview = document.getElementById('iconPickerPreview');
+      const iconPreviewEmoji = document.getElementById('iconPreviewEmoji');
+      const iconPickerDropdown = document.getElementById('iconPickerDropdown');
+
+      // 点击预览区域展开/折叠图标面板
+      if (iconPickerPreview && iconPickerDropdown) {
+        iconPickerPreview.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = iconPickerDropdown.style.display === 'block';
+          if (!isOpen) {
+            // 关闭颜色下拉框
+            const colorPaletteDropdown = document.getElementById('colorPaletteDropdown');
+            if (colorPaletteDropdown) {
+              colorPaletteDropdown.style.display = 'none';
+            }
+            // 展开时调整位置,防止溢出
+            const previewRect = iconPickerPreview.getBoundingClientRect();
+            const modalBody = document.querySelector('#genericModal .modal-body');
+            const modalRect = modalBody.getBoundingClientRect();
+            const dropdownWidth = 200;
+            const previewWidth = 48;
+
+            // 计算预览框中心位置
+            const previewCenter = previewRect.left + previewWidth / 2;
+            const dropdownLeft = previewCenter - dropdownWidth / 2;
+            const dropdownRight = previewCenter + dropdownWidth / 2;
+
+            // 检测溢出并调整位置
+            if (dropdownLeft < modalRect.left) {
+              // 左侧溢出,改为左对齐
+              iconPickerDropdown.style.left = '0';
+              iconPickerDropdown.style.transform = 'none';
+            } else if (dropdownRight > modalRect.right) {
+              // 右侧溢出,改为右对齐
+              iconPickerDropdown.style.left = 'auto';
+              iconPickerDropdown.style.right = '0';
+              iconPickerDropdown.style.transform = 'none';
+            } else {
+              // 不溢出,居中显示
+              iconPickerDropdown.style.left = '50%';
+              iconPickerDropdown.style.right = 'auto';
+              iconPickerDropdown.style.transform = 'translateX(-50%)';
+            }
+          }
+          iconPickerDropdown.style.display = isOpen ? 'none' : 'block';
+        });
+
+        // 点击图标选择
+        document.querySelectorAll('.icon-item').forEach(item => {
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // 移除之前的选中状态
+            document.querySelectorAll('.icon-item').forEach(i => {
+              i.style.background = 'var(--bg)';
+              i.style.borderColor = 'transparent';
+            });
+            // 设置当前选中
+            item.style.background = 'var(--primary-light)';
+            item.style.borderColor = 'var(--primary)';
+            selectedIcon = item.dataset.icon;
+            // 更新预览图标
+            if (iconPreviewEmoji) {
+              iconPreviewEmoji.textContent = selectedIcon;
+            }
+            // 折叠面板
+            iconPickerDropdown.style.display = 'none';
+          });
+        });
+
+        // 点击其他地方关闭面板
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#iconPickerWrapper')) {
+            iconPickerDropdown.style.display = 'none';
+          }
+        });
+      }
+
+      // 色板选择器事件
+      let selectedColor = '#F97316';
+      const colorPickerPreview = document.getElementById('colorPickerPreview');
+      const colorPreviewDot = document.getElementById('colorPreviewDot');
+      const colorPaletteDropdown = document.getElementById('colorPaletteDropdown');
+
+      // 点击预览区域展开/折叠色板
+      if (colorPickerPreview && colorPaletteDropdown) {
+        colorPickerPreview.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = colorPaletteDropdown.style.display === 'block';
+          if (!isOpen) {
+            // 关闭图标下拉框
+            const iconPickerDropdown = document.getElementById('iconPickerDropdown');
+            if (iconPickerDropdown) {
+              iconPickerDropdown.style.display = 'none';
+            }
+            // 展开时调整位置,防止溢出
+            const previewRect = colorPickerPreview.getBoundingClientRect();
+            const modalBody = document.querySelector('#genericModal .modal-body');
+            const modalRect = modalBody.getBoundingClientRect();
+            const dropdownWidth = 195;
+            const previewWidth = 48;
+
+            // 计算预览框中心位置
+            const previewCenter = previewRect.left + previewWidth / 2;
+            const dropdownLeft = previewCenter - dropdownWidth / 2;
+            const dropdownRight = previewCenter + dropdownWidth / 2;
+
+            // 检测溢出并调整位置
+            if (dropdownLeft < modalRect.left) {
+              // 左侧溢出,改为左对齐
+              colorPaletteDropdown.style.left = '0';
+              colorPaletteDropdown.style.transform = 'none';
+            } else if (dropdownRight > modalRect.right) {
+              // 右侧溢出,改为右对齐
+              colorPaletteDropdown.style.left = 'auto';
+              colorPaletteDropdown.style.right = '0';
+              colorPaletteDropdown.style.transform = 'none';
+            } else {
+              // 不溢出,居中显示
+              colorPaletteDropdown.style.left = '50%';
+              colorPaletteDropdown.style.right = 'auto';
+              colorPaletteDropdown.style.transform = 'translateX(-50%)';
+            }
+          }
+          colorPaletteDropdown.style.display = isOpen ? 'none' : 'block';
+        });
+
+        // 点击颜色选择
+        document.querySelectorAll('.palette-color').forEach(dot => {
+          dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // 移除之前的选中状态
+            document.querySelectorAll('.palette-color').forEach(d => d.style.borderColor = 'transparent');
+            // 设置当前选中
+            dot.style.borderColor = 'var(--text)';
+            selectedColor = dot.dataset.color;
+            // 更新预览圆点
+            if (colorPreviewDot) {
+              colorPreviewDot.style.background = selectedColor;
+            }
+            // 折叠色板
+            colorPaletteDropdown.style.display = 'none';
+          });
+        });
+
+        // 点击其他地方关闭色板
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#colorPickerWrapper')) {
+            colorPaletteDropdown.style.display = 'none';
+          }
+        });
+      }
+
+      // 编辑按钮事件
+      document.querySelectorAll('.cat-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          const cat = cats[editType][idx];
+
+          // 创建编辑弹窗 - 图标网格
+          let editIconHtml = '<div style="display:flex;flex-direction:column;gap:3px;">';
+          Array.from({length: 4}, (_, row) => {
+            editIconHtml += '<div style="display:flex;gap:3px;">' +
+              iconList.slice(row * 7, row * 7 + 7).map((icon) =>
+                '<div class="edit-icon-item" data-icon="' + icon + '" style="width:24px;height:24px;border-radius:var(--radius-sm);background:' + (icon === cat.icon ? 'var(--primary-light)' : 'var(--bg)') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;border:2px solid ' + (icon === cat.icon ? 'var(--primary)' : 'transparent') + ';">' + icon + '</div>'
+              ).join('') +
+            '</div>';
+          });
+          editIconHtml += '</div>';
+
+          let editColorHtml = '<div style="display:flex;flex-direction:column;gap:1px;">';
+          // 横向:深浅程度(5列),纵向:颜色种类(10行)
+          Array.from({length: 5}, (_, depth) => {
+            editColorHtml += '<div style="display:flex;gap:1px;">' +
+              Object.values(colorPalette).map((colors) =>
+                '<div class="edit-palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === cat.color ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+              ).join('') +
+            '</div>';
+          });
+          editColorHtml += '</div>';
+
+          document.getElementById('genericModalTitle').textContent = '编辑分类';
+          document.getElementById('genericModalBody').innerHTML =
+            '<div style="display:flex;flex-direction:column;gap:12px;">' +
+              '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">图标</label>' + editIconHtml + '</div>' +
+              '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">颜色</label>' + editColorHtml + '</div>' +
+            '</div>';
+          document.getElementById('genericModalCancel').style.display = 'inline-block';
+          document.getElementById('genericModalConfirm').textContent = '保存';
+
+          let newIcon = cat.icon;
+          document.querySelectorAll('.edit-icon-item').forEach(item => {
+            item.addEventListener('click', () => {
+              document.querySelectorAll('.edit-icon-item').forEach(i => {
+                i.style.background = 'var(--bg)';
+                i.style.borderColor = 'transparent';
+              });
+              item.style.background = 'var(--primary-light)';
+              item.style.borderColor = 'var(--primary)';
+              newIcon = item.dataset.icon;
+            });
+          });
+
+          let newColor = cat.color;
+          document.querySelectorAll('.edit-palette-color').forEach(dot => {
+            dot.addEventListener('click', () => {
+              document.querySelectorAll('.edit-palette-color').forEach(d => d.style.borderColor = 'transparent');
+              dot.style.borderColor = 'var(--text)';
+              newColor = dot.dataset.color;
+            });
+          });
+
+          document.getElementById('genericModalConfirm').onclick = () => {
+            cats[editType][idx].icon = newIcon;
+            cats[editType][idx].color = newColor;
+            saveCategories(cats);
+
+            // 恢复分类管理弹窗
+            document.getElementById('genericModalTitle').textContent = '分类管理';
+            document.getElementById('genericModalBody').innerHTML = buildCatHTML();
+            document.getElementById('genericModalCancel').style.display = 'inline-block';
+            document.getElementById('genericModalConfirm').textContent = '确定';
+            bindCatEvents();
+            showToast('已更新');
+          };
+        });
+      });
+
+      // 拖拽排序功能
+      let draggedItem = null;
+
+      document.querySelectorAll('.category-manage-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          draggedItem = item;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          draggedItem = null;
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+
+          if (!draggedItem || draggedItem === item) return;
+
+          const list = document.querySelector('.category-manage-list');
+          const items = [...list.querySelectorAll('.category-manage-item')];
+          const draggedIdx = items.indexOf(draggedItem);
+          const targetIdx = items.indexOf(item);
+
+          if (draggedIdx < targetIdx) {
+            list.insertBefore(draggedItem, item.nextSibling);
+          } else {
+            list.insertBefore(draggedItem, item);
+          }
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+
+          // 更新数据顺序
+          const list = document.querySelector('.category-manage-list');
+          const items = [...list.querySelectorAll('.category-manage-item')];
+          const newOrder = items.map(item => {
+            const idx = parseInt(item.dataset.idx);
+            return cats[editType][idx];
+          });
+
+          cats[editType] = newOrder;
+          saveCategories(cats);
+
+          // 重新渲染列表以更新data-idx
+          document.getElementById('genericModalBody').innerHTML = buildCatHTML();
+          bindCatEvents();
+        });
+      });
 
       document.querySelectorAll('.cat-del').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2939,8 +3692,6 @@ body {
           const name = document.getElementById('newCatInput').value.trim();
           if (!name) return;
           if (cats[editType].some(c => c.value === name)) { showToast('分类已存在'); return; }
-          const selectedIcon = document.getElementById('iconSelect').value;
-          const selectedColor = document.getElementById('colorSelect').value;
           cats[editType].push({
             value: name,
             icon: selectedIcon,
@@ -2973,6 +3724,78 @@ body {
       close();
     });
   });
+
+  // ===== 背景皮肤功能 =====
+  function loadBackgroundSkin() {
+    const bgData = localStorage.getItem('backgroundSkin');
+    if (bgData) {
+      const bgLayer = document.getElementById('bgSkinLayer');
+      const bgOverlay = document.getElementById('bgSkinOverlay');
+      bgLayer.style.backgroundImage = `url(${bgData})`;
+      bgLayer.style.display = 'block';
+      bgOverlay.style.display = 'block';
+      document.getElementById('bgPreview').style.backgroundImage = `url(${bgData})`;
+      document.getElementById('bgPreviewContainer').style.display = 'block';
+    }
+  }
+
+  function saveBackgroundSkin(dataUrl) {
+    try {
+      localStorage.setItem('backgroundSkin', dataUrl);
+      loadBackgroundSkin();
+      showToast('背景皮肤已应用', 'success');
+    } catch (e) {
+      showToast('图片太大，请选择更小的图片', 'error');
+    }
+  }
+
+  function removeBackgroundSkin() {
+    localStorage.removeItem('backgroundSkin');
+    document.getElementById('bgSkinLayer').style.display = 'none';
+    document.getElementById('bgSkinOverlay').style.display = 'none';
+    document.getElementById('bgPreviewContainer').style.display = 'none';
+    document.getElementById('bgPreview').style.backgroundImage = '';
+    showToast('背景皮肤已删除', 'success');
+  }
+
+  // 上传背景图片
+  document.getElementById('btnUploadBg').addEventListener('click', () => {
+    document.getElementById('fileBgInput').click();
+  });
+
+  document.getElementById('fileBgInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('请选择图片文件', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      saveBackgroundSkin(event.target.result);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = ''; // 清空input
+  });
+
+  // 删除背景图片
+  document.getElementById('btnRemoveBg').addEventListener('click', () => {
+    const bgData = localStorage.getItem('backgroundSkin');
+    if (!bgData) {
+      showToast('当前没有背景皮肤', 'error');
+      return;
+    }
+
+    showGenericModal('确认删除', '<p style="font-size:13px;color:var(--text-secondary);">确定要删除当前背景皮肤吗？</p>', (close) => {
+      removeBackgroundSkin();
+      close();
+    });
+  });
+
+  // 页面加载时应用背景皮肤
+  loadBackgroundSkin();
 
   // 数据导出记录
   document.getElementById('settingExportHistory').addEventListener('click', () => {
@@ -3019,8 +3842,14 @@ body {
   document.getElementById('settingClearData').addEventListener('click', () => {
     const security = getSecuritySettings();
     
+    // 检查是否开启了安全验证
+    if (!security.enabled) {
+      showToast('请先开启安全验证', 'error');
+      return;
+    }
+    
     // 如果设置了密码，需要先验证密码
-    if (security.enabled && security.password) {
+    if (security.password) {
       document.getElementById('passwordConfirmInput').value = '';
       document.getElementById('passwordConfirmModal').classList.add('show');
       return;
@@ -3034,22 +3863,41 @@ body {
   document.getElementById('passwordConfirmCancel').addEventListener('click', () => {
     document.getElementById('passwordConfirmModal').classList.remove('show');
     document.getElementById('passwordConfirmInput').value = '';
+    window.pendingSecurityClose = false;
   });
 
   document.getElementById('passwordConfirmOk').addEventListener('click', () => {
     const security = getSecuritySettings();
     const password = document.getElementById('passwordConfirmInput').value;
-    
+
     if (password !== security.password) {
       showToast('密码错误', 'error');
       document.getElementById('passwordConfirmInput').value = '';
       document.getElementById('passwordConfirmInput').focus();
       return;
     }
-    
-    // 密码正确，关闭密码确认弹窗，显示清除确认对话框
+
+    // 密码正确，关闭密码确认弹窗
     document.getElementById('passwordConfirmModal').classList.remove('show');
     document.getElementById('passwordConfirmInput').value = '';
+
+    // 处理关闭安全验证
+    if (window.pendingSecurityClose) {
+      window.pendingSecurityClose = false;
+      security.enabled = false;
+      saveSecuritySettings(security);
+      document.getElementById('securityModal').classList.remove('show');
+      document.getElementById('securityStatus').textContent = '已关闭';
+      showToast('安全验证已关闭');
+      // 清空输入
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('confirmPasswordInput').value = '';
+      document.getElementById('securityQuestionInput').value = '';
+      document.getElementById('securityAnswerInput').value = '';
+      return;
+    }
+
+    // 处理清除数据
     showClearDataConfirm();
   });
 
@@ -3197,16 +4045,25 @@ body {
   document.getElementById('securityModalConfirm').addEventListener('click', () => {
     const toggle = document.getElementById('securityToggle').checked;
     const security = getSecuritySettings();
-    
+
+    // 关闭安全验证时需要密码确认
+    if (!toggle && security.password) {
+      window.pendingSecurityClose = true;
+      document.getElementById('passwordConfirmModal').classList.add('show');
+      document.getElementById('passwordConfirmInput').value = '';
+      document.getElementById('passwordConfirmInput').focus();
+      return;
+    }
+
     // 判断是否在修改密码（已有密码且密码区域可见）
     const isChangingPassword = security.password && document.getElementById('securityPasswordSection').style.display === 'block';
-    
+
     if (isChangingPassword || (toggle && !security.password)) {
       const newPwd = document.getElementById('newPasswordInput').value;
       const confirmPwd = document.getElementById('confirmPasswordInput').value;
       const question = document.getElementById('securityQuestionInput').value.trim();
       const answer = document.getElementById('securityAnswerInput').value.trim();
-      
+
       if (!newPwd || !/^\d{4,8}$/.test(newPwd)) {
         showToast('请输入4-8位数字密码');
         return;
@@ -3227,13 +4084,13 @@ body {
       security.question = question;
       security.answer = answer;
     }
-    
+
     security.enabled = toggle;
     saveSecuritySettings(security);
     document.getElementById('securityModal').classList.remove('show');
     document.getElementById('securityStatus').textContent = security.enabled ? '已开启' : '已关闭';
     showToast('设置已保存');
-    
+
     // 清空输入
     document.getElementById('newPasswordInput').value = '';
     document.getElementById('confirmPasswordInput').value = '';
