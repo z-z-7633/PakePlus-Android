@@ -668,6 +668,17 @@ body {
   transform: translateX(-50%); font-size: 10px; color: var(--text-muted); white-space: nowrap;
 }
 
+/* 分类颜色模式选项 */
+.theme-color-option {
+  cursor: pointer; transition: all 0.2s;
+}
+.theme-color-option:active {
+  transform: scale(0.98);
+}
+.theme-color-option:hover {
+  opacity: 0.9;
+}
+
 /* 分类管理 */
 .category-manage-list { display: flex; flex-direction: column; gap: 6px; }
 .category-manage-item {
@@ -1005,6 +1016,16 @@ body {
 
   <div class="settings-group">
     <div class="settings-group-title">分类管理</div>
+    <div class="settings-item" id="settingCategoryColorMode">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="15.5" r="2.5"/><circle cx="6.5" cy="15.5" r="2.5"/><path d="M13.5 9v1.5l2.5 3.5"/><path d="M6.5 15.5l4-4.5"/></svg>
+        <span class="item-label">分类颜色定义</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="item-value" id="categoryColorModeValue">主题色</span>
+        <span class="arrow">›</span>
+      </div>
+    </div>
     <div class="settings-item" id="settingCategoryManage">
       <div class="left">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -1051,6 +1072,16 @@ body {
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span class="item-value" id="securityStatus">已关闭</span>
+        <span class="arrow">›</span>
+      </div>
+    </div>
+    <div class="settings-item" id="settingRefreshTime">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="item-label">刷新时间</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="item-value" id="refreshTimeValue">1 分钟</span>
         <span class="arrow">›</span>
       </div>
     </div>
@@ -1187,6 +1218,39 @@ body {
   </div>
 </div>
 
+<!-- ===== 刷新时间设置弹窗 ===== -->
+<div class="modal-overlay" id="refreshTimeModal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3>刷新时间</h3>
+    <div class="modal-body">
+      <label style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;display:block;">后台停留超过该时间后，再次进入将自动刷新页面</label>
+      <select id="refreshTimeSelect" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;margin-bottom:10px;">
+        <option value="1">1 分钟</option>
+        <option value="2">2 分钟</option>
+        <option value="5">5 分钟</option>
+        <option value="10">10 分钟</option>
+        <option value="30">30 分钟</option>
+        <option value="60">1 小时</option>
+        <option value="custom">自定义</option>
+      </select>
+      <div id="customTimeSection" style="display:none;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="number" id="customTimeValue" min="1" max="999" placeholder="时长" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+          <select id="customTimeUnit" style="width:80px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+            <option value="1">秒</option>
+            <option value="60">分钟</option>
+            <option value="3600">小时</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="refreshTimeCancel">取消</button>
+      <button class="btn-confirm" id="refreshTimeConfirm">确定</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== 忘记密码验证弹窗 ===== -->
 <div class="modal-overlay" id="forgotPasswordModal">
   <div class="modal-box" style="max-width:320px;">
@@ -1232,8 +1296,8 @@ body {
 <!-- ===== 底部导航 ===== -->
 <div class="tab-bar">
   <div class="tab-item active" data-tab="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>首页</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>分析</span>
   </div>
   <div class="tab-item" data-tab="add">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -1380,7 +1444,8 @@ body {
     records: 'money_records',
     settings: 'money_settings',
     categories: 'money_categories',
-    security: 'money_security'
+    security: 'money_security',
+    categoryCustomColors: 'money_category_custom_colors' // 存储各分类的自定义颜色历史
   };
 
   // ===== 默认分类 =====
@@ -1406,8 +1471,117 @@ body {
   const DEFAULT_SETTINGS = {
     accountName: '我的账本',
     currency: '¥',
-    theme: 'blue'
+    theme: 'blue',
+    refreshTime: 60, // 默认60秒（1分钟）
+    categoryColorMode: 'theme' // 默认为主题色模式（'theme' 或 'custom'）
   };
+
+  // ===== 主题分类颜色映射 =====
+  // 每个主题直接定义各分类的颜色（十六进制值）
+  const THEME_COLOR_CONFIG = {
+    blue: {
+      expense: {
+        '餐饮': '#4A90E2',  // 亮蓝
+        '交通': '#5BA8E8',  // 天蓝
+        '购物': '#7B8FEF',  // 蓝紫
+        '娱乐': '#6B9CED',  // 亮蓝
+        '住房': '#5090D8',  // 深蓝
+        '医疗': '#3A85D5',  // 深蓝
+        '其他': '#8BA8E5'   // 灰蓝
+      },
+      income: {
+        '工资': '#5BA0E5',  // 亮蓝
+        '奖金': '#6B9AED',  // 蓝
+        '投资': '#4A95E0',  // 蓝
+        '其他': '#8BA8E5'   // 灰蓝
+      }
+    },
+    green: {
+      expense: {
+        '餐饮': '#4CAF50',  // 绿
+        '交通': '#66BB6A',  // 亮绿
+        '购物': '#8BC34A',  // 黄绿
+        '娱乐': '#43A047',  // 深绿
+        '住房': '#388E3C',  // 深绿
+        '医疗': '#2E7D32',  // 深绿
+        '其他': '#81C784'   // 灰绿
+      },
+      income: {
+        '工资': '#4CAF50',  // 绿
+        '奖金': '#7CB342',  // 黄绿
+        '投资': '#43A047',  // 深绿
+        '其他': '#81C784'   // 灰绿
+      }
+    },
+    purple: {
+      expense: {
+        '餐饮': '#9C27B0',  // 紫
+        '交通': '#AB47BC',  // 亮紫
+        '购物': '#CE93D8',  // 粉紫
+        '娱乐': '#8E24AA',  // 深紫
+        '住房': '#7B1FA2',  // 深紫
+        '医疗': '#6A1B9A',  // 深紫
+        '其他': '#BA68C8'   // 灰紫
+      },
+      income: {
+        '工资': '#AB47BC',  // 亮紫
+        '奖金': '#CE93D8',  // 粉紫
+        '投资': '#8E24AA',  // 深紫
+        '其他': '#BA68C8'   // 灰紫
+      }
+    },
+    dark: {
+      expense: {
+        '餐饮': '#64B5F6',  // 亮蓝
+        '交通': '#4FC3F7',  // 亮青
+        '购物': '#9575CD',  // 亮紫
+        '娱乐': '#7986CB',  // 亮靛蓝
+        '住房': '#5C6BC0',  // 亮深蓝
+        '医疗': '#42A5F5',  // 亮蓝
+        '其他': '#90CAF9'   // 亮灰蓝
+      },
+      income: {
+        '工资': '#4FC3F7',  // 亮青
+        '奖金': '#7986CB',  // 亮靛蓝
+        '投资': '#64B5F6',  // 亮蓝
+        '其他': '#90CAF9'   // 亮灰蓝
+      }
+    },
+    warm: {
+      expense: {
+        '餐饮': '#FF9800',  // 橙
+        '交通': '#FFB74D',  // 亮橙
+        '购物': '#FFA726',  // 橙
+        '娱乐': '#FB8C00',  // 深橙
+        '住房': '#F57C00',  // 深橙
+        '医疗': '#EF6C00',  // 深橙
+        '其他': '#FFCC80'   // 灰橙
+      },
+      income: {
+        '工资': '#FFB74D',  // 亮橙
+        '奖金': '#FFA726',  // 橙
+        '投资': '#FB8C00',  // 深橙
+        '其他': '#FFCC80'   // 灰橙
+      }
+    }
+  };
+
+
+  // 获取主题分类颜色
+  function getThemeCategoryColor(categoryName, type, theme) {
+    const themeConfig = THEME_COLOR_CONFIG[theme] || THEME_COLOR_CONFIG['blue'];
+    const categoryColor = themeConfig[type] && themeConfig[type][categoryName];
+
+    // 如果分类有定义的颜色，直接返回
+    if (categoryColor) {
+      return categoryColor;
+    }
+
+    // 如果分类不在预定义列表中，返回主题的默认颜色（取第一个预定义颜色）
+    const typeColors = themeConfig[type] || {};
+    const defaultColor = Object.values(typeColors)[0] || '#5B8DEF';
+    return defaultColor;
+  }
 
   // ===== 数据管理 =====
   function load(key, fallback) {
@@ -1495,6 +1669,11 @@ body {
     document.querySelectorAll('.theme-dot').forEach(d => {
       d.classList.toggle('active', d.dataset.theme === theme);
     });
+
+    // 如果分类颜色模式为主题色，则更新分类颜色
+    if (s.categoryColorMode === 'theme') {
+      applyThemeColorsToCategories(theme);
+    }
   }
 
   // ===== Tab 切换 =====
@@ -1504,6 +1683,10 @@ body {
   function switchTab(tab) {
     tabItems.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
     tabPages.forEach(p => p.classList.toggle('active', p.id === 'page-' + tab));
+    // 如果切换到非添加页面，标记为非连续添加
+    if (tab !== 'add') {
+      isContinuousAdd = false;
+    }
     if (tab === 'home') renderHome();
     else if (tab === 'add') resetForm();
     else if (tab === 'list') { initListFilters(); renderList(); }
@@ -1727,6 +1910,113 @@ body {
         showDayDetails(date);
       });
     });
+  }
+
+  // 显示周期明细（支持日、周、月、年维度）
+  function showPeriodDetails(periodInfo) {
+    const allRecords = getAllRecords();
+    let periodRecords = [];
+    let title = '';
+
+    // 根据维度获取记录
+    if (periodInfo.dimension === 'day') {
+      periodRecords = allRecords.filter(r => r.date === periodInfo.date);
+      title = periodInfo.date + ' - 明细';
+    } else if (periodInfo.dimension === 'week') {
+      periodRecords = allRecords.filter(r => r.date >= periodInfo.startDate && r.date <= periodInfo.endDate);
+      title = periodInfo.startDate + ' ~ ' + periodInfo.endDate + ' - 明细';
+    } else if (periodInfo.dimension === 'month') {
+      periodRecords = allRecords.filter(r => r.date && r.date.startsWith(periodInfo.month));
+      title = periodInfo.month + ' - 明细';
+    } else if (periodInfo.dimension === 'year') {
+      periodRecords = allRecords.filter(r => r.date && r.date.startsWith(periodInfo.year));
+      title = periodInfo.year + '年 - 明细';
+    }
+
+    // 根据趋势分析模块的类型和分类筛选过滤记录
+    const type = homeFilter.lineType;
+    const category = homeFilter.lineCategory;
+    periodRecords = periodRecords.filter(r => {
+      if (r.type !== type) return false;
+      if (category !== 'all' && r.category !== category) return false;
+      return true;
+    });
+
+    let sortBy = 'amount_desc'; // 默认金额倒序
+
+    function sortRecords(records, sortBy) {
+      let sorted = [...records];
+      if (sortBy === 'amount_desc') {
+        sorted.sort((a, b) => b.amount - a.amount);
+      } else if (sortBy === 'amount_asc') {
+        sorted.sort((a, b) => a.amount - b.amount);
+      } else if (sortBy === 'date_desc') {
+        sorted.sort((a, b) => b.date.localeCompare(a.date));
+      } else if (sortBy === 'date_asc') {
+        sorted.sort((a, b) => a.date.localeCompare(b.date));
+      }
+      return sorted;
+    }
+
+    function buildDetailList(sortedRecords) {
+      if (sortedRecords.length === 0) {
+        return '<div style="text-align:center;padding:20px;color:var(--text-muted);">暂无记录</div>';
+      }
+
+      let html = '';
+      sortedRecords.forEach(r => {
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">${r.category}</div>
+              ${r.note ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + escapeHtml(r.note) + '</div>' : ''}
+              ${periodInfo.dimension !== 'day' ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + r.date + '</div>' : ''}
+            </div>
+            <div style="font-size:15px;font-weight:700;color:${r.type === 'expense' ? 'var(--expense)' : 'var(--income)'};">¥${formatMoneyRaw(r.amount)}</div>
+          </div>
+        `;
+      });
+      return html;
+    }
+
+    // 创建固定排序栏和内容区
+    // 日维度只有金额排序，周/月/年维度才有日期排序
+    const sortOptions = periodInfo.dimension === 'day'
+      ? `<option value="amount_desc" ${sortBy === 'amount_desc' ? 'selected' : ''}>金额倒序</option>
+         <option value="amount_asc" ${sortBy === 'amount_asc' ? 'selected' : ''}>金额升序</option>`
+      : `<option value="amount_desc" ${sortBy === 'amount_desc' ? 'selected' : ''}>金额倒序</option>
+         <option value="amount_asc" ${sortBy === 'amount_asc' ? 'selected' : ''}>金额升序</option>
+         <option value="date_desc" ${sortBy === 'date_desc' ? 'selected' : ''}>日期倒序</option>
+         <option value="date_asc" ${sortBy === 'date_asc' ? 'selected' : ''}>日期升序</option>`;
+
+    let html = `
+      <div style="position:sticky;top:0;background:var(--card);padding-bottom:12px;margin-bottom:0;z-index:10;">
+        <select id="periodDetailSortSelect" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;">
+          ${sortOptions}
+        </select>
+      </div>
+      <div id="periodDetailListContainer">
+        ${buildDetailList(sortRecords(periodRecords, sortBy))}
+      </div>
+    `;
+
+    document.getElementById('genericModalTitle').textContent = title;
+    document.getElementById('genericModalBody').innerHTML = html;
+    document.getElementById('genericModal').classList.add('show');
+    document.getElementById('genericModalConfirm').style.display = 'none';
+    document.getElementById('genericModalCancel').textContent = '关闭';
+
+    const sortSelect = document.getElementById('periodDetailSortSelect');
+    sortSelect.addEventListener('change', (e) => {
+      sortBy = e.target.value;
+      const sortedRecords = sortRecords(periodRecords, sortBy);
+      document.getElementById('periodDetailListContainer').innerHTML = buildDetailList(sortedRecords);
+    });
+
+    const cancelBtn = document.getElementById('genericModalCancel');
+    cancelBtn.onclick = () => {
+      document.getElementById('genericModal').classList.remove('show');
+    };
   }
 
   // 显示当天明细
@@ -2048,8 +2338,8 @@ body {
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
   function dateStr(y, m, d) { return y + '-' + pad2(m) + '-' + pad2(d); }
 
-  // 存储折线图日期标签（用于双击查看明细）
-  let lineChartDateLabels = [];
+  // 存储折线图周期标签（用于长按查看明细）
+  let lineChartPeriodLabels = [];
 
   function updateLineChart() {
     const chartArea = document.getElementById('lineChartArea');
@@ -2069,7 +2359,7 @@ body {
     const category = homeFilter.lineCategory;
     const labels = [];
     const data = [];
-    const dateLabels = []; // 存储每个数据点对应的日期（仅天维度）
+    const periodLabels = []; // 存储每个数据点对应的周期信息
 
     // 根据类型和分类过滤记录
     const filteredRecords = allRecords.filter(r => {
@@ -2088,7 +2378,7 @@ body {
         for (let day = 1; day <= daysInMonth; day++) {
           const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
           labels.push(day + '日');
-          dateLabels.push(dateStr);
+          periodLabels.push({ dimension: 'day', date: dateStr });
           const sum = filteredRecords
             .filter(r => r.date === dateStr)
             .reduce((acc, r) => acc + r.amount, 0);
@@ -2106,7 +2396,7 @@ body {
           const day = currentDate.getDate();
           const dateStr = year + '-' + pad2(month) + '-' + pad2(day);
           labels.push(day + '日');
-          dateLabels.push(dateStr);
+          periodLabels.push({ dimension: 'day', date: dateStr });
           const sum = filteredRecords
             .filter(r => r.date === dateStr)
             .reduce((acc, r) => acc + r.amount, 0);
@@ -2138,6 +2428,7 @@ body {
         const m = d.getMonth();
         const prefix = y + '-' + pad2(m + 1);
         labels.push((m + 1) + '月');
+        periodLabels.push({ dimension: 'month', month: prefix });
         const sum = allHistoryRecords
           .filter(r => r.date && r.date.startsWith(prefix))
           .reduce((acc, r) => acc + r.amount, 0);
@@ -2166,6 +2457,7 @@ body {
         const wsStr = dateStr(ws.getFullYear(), ws.getMonth() + 1, ws.getDate());
         const weStr = dateStr(we.getFullYear(), we.getMonth() + 1, we.getDate());
         labels.push((ws.getMonth() + 1) + '/' + ws.getDate());
+        periodLabels.push({ dimension: 'week', startDate: wsStr, endDate: weStr });
         const sum = allHistoryRecords
           .filter(r => r.date >= wsStr && r.date <= weStr)
           .reduce((acc, r) => acc + r.amount, 0);
@@ -2190,6 +2482,7 @@ body {
       for (let i = 4; i >= 0; i--) {
         const y = refYear - i;
         labels.push(y + '年');
+        periodLabels.push({ dimension: 'year', year: String(y) });
         const sum = allHistoryRecords
           .filter(r => r.date && r.date.startsWith('' + y))
           .reduce((acc, r) => acc + r.amount, 0);
@@ -2285,19 +2578,21 @@ body {
       }
     });
 
-    // 保存日期标签供双击使用
-    lineChartDateLabels = dimension === 'day' ? dateLabels : [];
+    // 保存日期标签供长按使用
+    lineChartPeriodLabels = periodLabels;
   }
 
-  // 折线图双击查看当日明细（只绑定一次）
+  // 折线图长按查看周期明细（只绑定一次）
   const lineChartCanvas = document.getElementById('lineChart');
-  if (!lineChartCanvas._dblClickBound) {
-    lineChartCanvas._dblClickBound = true;
-    lineChartCanvas.addEventListener('dblclick', (e) => {
-      if (!lineChart || lineChartDateLabels.length === 0) return;
+  if (!lineChartCanvas._longPressBound) {
+    lineChartCanvas._longPressBound = true;
+    let longPressTimer = null;
+    let pressX = 0;
+
+    const handleLongPress = (x) => {
+      if (!lineChart || lineChartPeriodLabels.length === 0) return;
 
       const rect = lineChartCanvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
       const chartAreaBounds = { left: lineChart.chartArea.left, right: lineChart.chartArea.right };
 
       // 计算点击位置对应的数据点索引
@@ -2305,10 +2600,57 @@ body {
         const labels = lineChart.data.labels;
         const index = Math.round((x - chartAreaBounds.left) / ((chartAreaBounds.right - chartAreaBounds.left) / (labels.length - 1)));
         const clampedIndex = Math.max(0, Math.min(index, labels.length - 1));
-        const date = lineChartDateLabels[clampedIndex];
-        if (date) {
-          showDayDetails(date);
+        const periodInfo = lineChartPeriodLabels[clampedIndex];
+        if (periodInfo) {
+          showPeriodDetails(periodInfo);
         }
+      }
+    };
+
+    // 鼠标长按（桌面端）
+    lineChartCanvas.addEventListener('mousedown', (e) => {
+      const rect = lineChartCanvas.getBoundingClientRect();
+      pressX = e.clientX - rect.left;
+      longPressTimer = setTimeout(() => {
+        handleLongPress(pressX);
+      }, 500); // 长按500ms触发
+    });
+
+    lineChartCanvas.addEventListener('mouseup', () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    });
+
+    lineChartCanvas.addEventListener('mouseleave', () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    });
+
+    // 触摸长按（移动端）
+    lineChartCanvas.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      const rect = lineChartCanvas.getBoundingClientRect();
+      pressX = touch.clientX - rect.left;
+      longPressTimer = setTimeout(() => {
+        handleLongPress(pressX);
+      }, 500); // 长按500ms触发
+    });
+
+    lineChartCanvas.addEventListener('touchend', () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    });
+
+    lineChartCanvas.addEventListener('touchcancel', () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
       }
     });
   }
@@ -2348,10 +2690,20 @@ body {
   document.getElementById('monthModeSelector').addEventListener('dblclick', () => {
     if (homeFilter.mode === 'month') {
       homeFilter.mode = 'range';
-      // 切换到时间范围模式时，初始化为当月
-      if (!homeFilter.startDate || !homeFilter.endDate) {
-        initDateRangePicker();
-      }
+      // 切换到时间范围模式时，使用当前月度的起始时间范围
+      const year = homeFilter.year;
+      const month = homeFilter.month;
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      const startDate = year + '-' + String(month).padStart(2, '0') + '-01';
+      const endDate = year + '-' + String(month).padStart(2, '0') + '-' + String(daysInMonth).padStart(2, '0');
+
+      homeFilter.startDate = startDate;
+      homeFilter.endDate = endDate;
+
+      document.getElementById('startDatePicker').value = startDate;
+      document.getElementById('endDatePicker').value = endDate;
+
       renderHome();
     }
   });
@@ -2360,14 +2712,30 @@ body {
   document.getElementById('rangeModeSelector').addEventListener('dblclick', () => {
     if (homeFilter.mode === 'range') {
       homeFilter.mode = 'month';
+      // 切换到月度模式时，使用时间范围末日期所在月
+      const endDate = new Date(homeFilter.endDate);
+      const year = endDate.getFullYear();
+      const month = endDate.getMonth() + 1;
+
+      homeFilter.year = year;
+      homeFilter.month = month;
       homeFilter.startDate = null;
       homeFilter.endDate = null;
+
+      document.getElementById('monthPicker').value = year + '-' + String(month).padStart(2, '0');
+
       renderHome();
     }
   });
 
   // 时间选择器事件
   document.getElementById('monthPicker').addEventListener('change', e => {
+    // 不能为空
+    if (!e.target.value) {
+      showToast('月份不能清除', 'error');
+      e.target.value = homeFilter.year + '-' + String(homeFilter.month).padStart(2, '0');
+      return;
+    }
     const [y, m] = e.target.value.split('-');
     homeFilter.year = parseInt(y);
     homeFilter.month = parseInt(m);
@@ -2376,11 +2744,23 @@ body {
 
   // 日期范围选择器事件
   document.getElementById('startDatePicker').addEventListener('change', e => {
+    // 不能为空
+    if (!e.target.value) {
+      showToast('日期不能清除', 'error');
+      e.target.value = homeFilter.startDate;
+      return;
+    }
     homeFilter.startDate = e.target.value;
     renderHome();
   });
 
   document.getElementById('endDatePicker').addEventListener('change', e => {
+    // 不能为空
+    if (!e.target.value) {
+      showToast('日期不能清除', 'error');
+      e.target.value = homeFilter.endDate;
+      return;
+    }
     homeFilter.endDate = e.target.value;
     renderHome();
   });
@@ -2456,6 +2836,8 @@ body {
 
   // ===== 添加表单 =====
   let currentType = 'expense';
+  let lastSubmitDate = null; // 记录上次提交的日期
+  let isContinuousAdd = false; // 标记是否是连续添加（未切换页面）
   const btnExpense = document.getElementById('btnExpense');
   const btnIncome = document.getElementById('btnIncome');
   const inputCategory = document.getElementById('inputCategory');
@@ -2481,7 +2863,12 @@ body {
   });
 
   function resetForm() {
-    inputDate.value = getTodayStr();
+    // 如果是连续添加，使用上次提交的日期；否则使用当天日期
+    if (isContinuousAdd && lastSubmitDate) {
+      inputDate.value = lastSubmitDate;
+    } else {
+      inputDate.value = getTodayStr();
+    }
     updateCategoryOptions();
     document.getElementById('inputAmount').value = '';
     document.getElementById('inputNote').value = '';
@@ -2507,6 +2894,8 @@ body {
       amount: amount,
       note: document.getElementById('inputNote').value.trim()
     });
+    lastSubmitDate = inputDate.value; // 记录最后提交的日期
+    isContinuousAdd = true; // 标记为连续添加
     showToast('记录已保存');
     resetForm();
   });
@@ -3241,6 +3630,14 @@ body {
     document.getElementById('currencyDisplay').textContent = s.currency;
     const exportHistory = getExportHistory();
     document.getElementById('exportHistoryCount').textContent = exportHistory.length + ' 次';
+    // 更新刷新时间显示
+    const refreshTime = s.refreshTime || 60; // 默认60秒
+    updateRefreshTimeDisplay(refreshTime);
+    // 更新分类颜色模式显示
+    const colorModeValue = document.getElementById('categoryColorModeValue');
+    if (colorModeValue) {
+      colorModeValue.textContent = s.categoryColorMode === 'custom' ? '自定义' : '主题色';
+    }
     applyTheme(s.theme);
   }
 
@@ -3250,6 +3647,141 @@ body {
     if (!dot) return;
     applyTheme(dot.dataset.theme);
     showToast('主题已切换');
+  });
+
+  // ===== 分类颜色管理函数 =====
+  // 获取自定义颜色历史
+  function getCategoryCustomColors() {
+    return load(KEYS.categoryCustomColors, {});
+  }
+
+  // 保存自定义颜色历史
+  function saveCategoryCustomColors(colors) {
+    save(KEYS.categoryCustomColors, colors);
+  }
+
+  // 应用主题颜色到分类
+  function applyThemeColorsToCategories(theme) {
+    const cats = getCategories();
+
+    // 应用支出分类颜色
+    cats.expense.forEach(cat => {
+      cat.color = getThemeCategoryColor(cat.value, 'expense', theme);
+    });
+
+    // 应用收入分类颜色
+    cats.income.forEach(cat => {
+      cat.color = getThemeCategoryColor(cat.value, 'income', theme);
+    });
+
+    saveCategories(cats);
+  }
+
+  // 恢复自定义颜色到分类
+  function restoreCustomColorsToCategories() {
+    const cats = getCategories();
+    const customColors = getCategoryCustomColors();
+
+    // 恢复支出分类颜色
+    cats.expense.forEach(cat => {
+      if (customColors.expense && customColors.expense[cat.value]) {
+        cat.color = customColors.expense[cat.value];
+      }
+    });
+
+    // 恢复收入分类颜色
+    cats.income.forEach(cat => {
+      if (customColors.income && customColors.income[cat.value]) {
+        cat.color = customColors.income[cat.value];
+      }
+    });
+
+    saveCategories(cats);
+  }
+
+  // 保存当前颜色为自定义颜色
+  function saveCurrentColorsAsCustom() {
+    const cats = getCategories();
+    const customColors = getCategoryCustomColors();
+
+    // 保存支出分类颜色
+    if (!customColors.expense) customColors.expense = {};
+    cats.expense.forEach(cat => {
+      customColors.expense[cat.value] = cat.color;
+    });
+
+    // 保存收入分类颜色
+    if (!customColors.income) customColors.income = {};
+    cats.income.forEach(cat => {
+      customColors.income[cat.value] = cat.color;
+    });
+
+    saveCategoryCustomColors(customColors);
+  }
+
+  // 分类颜色定义设置项点击
+  document.getElementById('settingCategoryColorMode').addEventListener('click', () => {
+    const s = getSettings();
+    const currentMode = s.categoryColorMode || 'theme';
+
+    const bodyHtml =
+      '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div class="theme-color-option ' + (currentMode === 'theme' ? 'active' : '') + '" data-mode="theme" style="padding:12px;border-radius:var(--radius);border:2px solid ' + (currentMode === 'theme' ? 'var(--primary)' : 'var(--border)') + ';cursor:pointer;transition:all 0.2s;background:' + (currentMode === 'theme' ? 'var(--primary-light)' : 'var(--card)') + ';">' +
+          '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">主题色</div>' +
+          '<div style="font-size:12px;color:var(--text-secondary);">根据当前主题自动为分类配置默认颜色</div>' +
+        '</div>' +
+        '<div class="theme-color-option ' + (currentMode === 'custom' ? 'active' : '') + '" data-mode="custom" style="padding:12px;border-radius:var(--radius);border:2px solid ' + (currentMode === 'custom' ? 'var(--primary)' : 'var(--border)') + ';cursor:pointer;transition:all 0.2s;background:' + (currentMode === 'custom' ? 'var(--primary-light)' : 'var(--card)') + ';">' +
+          '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">自定义</div>' +
+          '<div style="font-size:12px;color:var(--text-secondary);">手动管理各分类的颜色定义</div>' +
+        '</div>' +
+      '</div>';
+
+    showGenericModal('分类颜色定义', bodyHtml, (close) => {
+      const selectedOption = document.querySelector('.theme-color-option.active');
+      if (selectedOption) {
+        const newMode = selectedOption.dataset.mode;
+        if (newMode !== currentMode) {
+          // 模式切换
+          if (newMode === 'custom') {
+            // 主题色→自定义：保存当前颜色为自定义颜色，然后恢复最近一次的自定义颜色
+            const customColors = getCategoryCustomColors();
+            if (customColors && (customColors.expense || customColors.income)) {
+              // 有历史记录，恢复历史颜色
+              restoreCustomColorsToCategories();
+            } else {
+              // 没有历史记录，保存当前颜色作为自定义颜色
+              saveCurrentColorsAsCustom();
+            }
+          } else {
+            // 自定义→主题色：先保存当前颜色为自定义颜色，再应用主题颜色
+            saveCurrentColorsAsCustom();
+            applyThemeColorsToCategories(s.theme);
+          }
+
+          s.categoryColorMode = newMode;
+          saveSettings(s);
+          renderSettings();
+          showToast('已切换为' + (newMode === 'custom' ? '自定义' : '主题色') + '模式');
+        }
+      }
+      close();
+    });
+
+    // 绑定选项点击事件
+    setTimeout(() => {
+      document.querySelectorAll('.theme-color-option').forEach(option => {
+        option.addEventListener('click', () => {
+          document.querySelectorAll('.theme-color-option').forEach(o => {
+            o.classList.remove('active');
+            o.style.borderColor = 'var(--border)';
+            o.style.background = 'var(--card)';
+          });
+          option.classList.add('active');
+          option.style.borderColor = 'var(--primary)';
+          option.style.background = 'var(--primary-light)';
+        });
+      });
+    }, 0);
   });
 
   // 通用弹窗
@@ -3301,22 +3833,62 @@ body {
   // 分类管理
   document.getElementById('settingCategoryManage').addEventListener('click', () => {
     const cats = getCategories();
+    const settings = getSettings();
+    const colorMode = settings.categoryColorMode || 'theme';
     let editType = 'expense';
 
     const iconList = ['📌','⭐','🔖','💎','🎯','🏷️','✨','🔥','💡','📚','🎵','🎮','🏠','🚗','💰','🎁','📱','💻','☕','🍔','🌟','🎨','🛒','💼','🌈','🎬','🍰','⚽'];
     // 颜色体系: 10种颜色,每种5个深浅程度
     const colorPalette = {
-      red: ['#FF6B6B', '#EF4444', '#DC2626', '#B91C1C', '#991B1B'],      // 红色
-      orange: ['#FFA726', '#FB923C', '#F97316', '#EA580C', '#C2410C'],   // 橙色
-      yellow: ['#FFD54F', '#FFCA28', '#F59E0B', '#D97706', '#B45309'],   // 黄色
-      green: ['#6EE7B7', '#34D399', '#10B981', '#059669', '#047857'],    // 绿色
-      teal: ['#5EEAD4', '#2DD4BF', '#14B8A6', '#0D9488', '#0F766E'],     // 蓝绿
-      cyan: ['#67E8F9', '#22D3EE', '#06B6D4', '#0891B2', '#0E7490'],     // 青色
-      blue: ['#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF'],     // 蓝色
-      purple: ['#A78BFA', '#8B5CF6', '#7C3AED', '#6D28D9', '#5B21B6'],    // 紫色
-      pink: ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9D174D'],      // 粉色
-      rose: ['#FB7185', '#F43F5E', '#E11D48', '#BE123C', '#9F1239']      // 玫红
+      red: ['#FF8A8A', '#EF4444', '#DC2626', '#B91C1C', '#7F1D1D'],      // 红色
+      orange: ['#FFB74D', '#FB923C', '#F97316', '#EA580C', '#9A3412'],   // 橙色
+      yellow: ['#FFE066', '#FFCA28', '#F59E0B', '#D97706', '#78350F'],   // 黄色
+      green: ['#86EFAC', '#34D399', '#10B981', '#059669', '#064E3B'],    // 绿色
+      teal: ['#5EEAD4', '#2DD4BF', '#14B8A6', '#0D9488', '#134E4A'],     // 蓝绿
+      cyan: ['#67E8F9', '#22D3EE', '#06B6D4', '#0891B2', '#155E75'],     // 青色
+      blue: ['#93C5FD', '#3B82F6', '#2563EB', '#1D4ED8', '#1E3A8A'],     // 蓝色
+      purple: ['#C4B5FD', '#8B5CF6', '#7C3AED', '#6D28D9', '#4C1D95'],    // 紫色
+      pink: ['#FBCFE8', '#EC4899', '#DB2777', '#BE185D', '#831843'],      // 粉色
+      slate: ['#CBD5E1', '#94A3B8', '#64748B', '#475569', '#1E293B']      // 灰色
     };
+
+    // 主题色系颜色列表 - 移到外部作用域，使编辑时也能访问
+    let themeColors = [];
+    if (colorMode === 'theme') {
+      const themeConfig = THEME_COLOR_CONFIG[settings.theme] || THEME_COLOR_CONFIG['blue'];
+      // 提取当前主题下的所有颜色并生成更多变体
+      const baseColors = [...new Set([...Object.values(themeConfig.expense || {}), ...Object.values(themeConfig.income || {})])];
+
+      // 为每个基础颜色生成深浅变体
+      const colorVariants = [];
+      baseColors.forEach(color => {
+        // 将十六进制颜色转换为RGB
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+
+        // 生成更亮的版本
+        const lighter = '#' + [r, g, b].map(c => Math.min(255, Math.round(c + (255 - c) * 0.3)).toString(16).padStart(2, '0')).join('');
+        // 生成更暗的版本
+        const darker = '#' + [r, g, b].map(c => Math.max(0, Math.round(c * 0.7)).toString(16).padStart(2, '0')).join('');
+
+        colorVariants.push(color, lighter, darker);
+      });
+
+      // 去重
+      const uniqueColors = [...new Set(colorVariants)];
+
+      // 计算亮度并排序（从亮到暗）
+      themeColors = uniqueColors.sort((a, b) => {
+        const getLuminance = (hex) => {
+          const r = parseInt(hex.slice(1, 3), 16) / 255;
+          const g = parseInt(hex.slice(3, 5), 16) / 255;
+          const b = parseInt(hex.slice(5, 7), 16) / 255;
+          return 0.299 * r + 0.587 * g + 0.114 * b; // ITU-R BT.601标准
+        };
+        return getLuminance(b) - getLuminance(a); // 从亮到暗
+      });
+    }
 
     function buildCatHTML() {
       const list = cats[editType];
@@ -3344,26 +3916,56 @@ body {
         '</div>';
 
       // 默认选中的颜色
-      const defaultColor = '#F97316';
+      let defaultColor = '#F97316';
+      if (colorMode === 'theme' && themeColors.length > 0) {
+        defaultColor = themeColors[0];
+      }
 
       // 颜色色板选择器(可折叠)
-      let colorPaletteHtml =
-        '<div id="colorPickerWrapper" style="position:relative;width:48px;height:36px;">' +
-          '<div id="colorPickerPreview" style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--card);border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;position:relative;">' +
-            '<div id="colorPreviewDot" style="width:10px;height:10px;border-radius:50%;background:' + defaultColor + ';"></div>' +
-            '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;right:4px;bottom:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
-          '</div>' +
-          '<div id="colorPaletteDropdown" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:195px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow-md);display:none;z-index:10;">' +
-            // 横向:深浅程度(5列),纵向:颜色种类(10行)
-            Array.from({length: 5}, (_, depth) =>
-              '<div style="display:flex;gap:1px;margin-bottom:1px;">' +
-                Object.values(colorPalette).map((colors) =>
-                  '<div class="palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === defaultColor ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
-                ).join('') +
-              '</div>'
-            ).join('') +
-          '</div>' +
-        '</div>';
+      let colorPaletteHtml = '';
+      if (colorMode === 'custom') {
+        // 自定义模式：显示完整色板
+        colorPaletteHtml =
+          '<div id="colorPickerWrapper" style="position:relative;width:48px;height:36px;">' +
+            '<div id="colorPickerPreview" style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--card);border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;position:relative;">' +
+              '<div id="colorPreviewDot" style="width:10px;height:10px;border-radius:50%;background:' + defaultColor + ';"></div>' +
+              '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;right:4px;bottom:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+            '</div>' +
+            '<div id="colorPaletteDropdown" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:195px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow-md);display:none;z-index:10;">' +
+              // 横向:深浅程度(5列),纵向:颜色种类(10行)
+              Array.from({length: 5}, (_, depth) =>
+                '<div style="display:flex;gap:1px;margin-bottom:1px;">' +
+                  Object.values(colorPalette).map((colors) =>
+                    '<div class="palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === defaultColor ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+                  ).join('') +
+                '</div>'
+              ).join('') +
+            '</div>' +
+          '</div>';
+      } else if (colorMode === 'theme') {
+        // 主题色模式：显示当前主题色系的颜色（网格布局，与自定义色板一致）
+        const colorsPerRow = Math.ceil(Math.sqrt(themeColors.length)); // 每行颜色数
+        const totalRows = Math.ceil(themeColors.length / colorsPerRow);
+
+        colorPaletteHtml =
+          '<div id="colorPickerWrapper" style="position:relative;width:48px;height:36px;">' +
+            '<div id="colorPickerPreview" style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--card);border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;position:relative;">' +
+              '<div id="colorPreviewDot" style="width:10px;height:10px;border-radius:50%;background:' + defaultColor + ';"></div>' +
+              '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;right:4px;bottom:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+            '</div>' +
+            '<div id="colorPaletteDropdown" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:195px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow-md);display:none;z-index:10;">' +
+              Array.from({length: totalRows}, (_, rowIdx) => {
+                const startIdx = rowIdx * colorsPerRow;
+                const rowColors = themeColors.slice(startIdx, startIdx + colorsPerRow);
+                return '<div style="display:flex;gap:1px;margin-bottom:1px;">' +
+                  rowColors.map(color =>
+                    '<div class="theme-color-item" data-color="' + color + '" style="width:17px;height:17px;border-radius:50%;background:' + color + ';cursor:pointer;border:2px solid ' + (color === defaultColor ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+                  ).join('') +
+                '</div>';
+              }).join('') +
+            '</div>' +
+          '</div>';
+      }
 
       return '<div style="display:flex;gap:6px;margin-bottom:10px;">' +
         '<button class="btn-confirm" id="catTypeExpense" style="flex:1;padding:7px;font-size:13px;' + (editType === 'expense' ? '' : 'background:var(--bg);color:var(--text-secondary);') + '">支出分类</button>' +
@@ -3378,7 +3980,7 @@ body {
           (c.value !== '其他' ? '<button class="cat-del" data-idx="' + i + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' : '') +
         '</div>').join('') +
       '</div>' +
-      '<style>.palette-color:active{transform:scale(0.9);}.icon-item:hover,.edit-icon-item:hover{opacity:0.8;}.icon-item:active,.edit-icon-item:active{transform:scale(0.95);}#colorPickerPreview:active,#iconPickerPreview:active{opacity:0.8;}.cat-edit:hover{color:var(--primary);background:var(--primary-light);}</style>' +
+      '<style>.palette-color:active{transform:scale(0.9);}.icon-item:hover,.edit-icon-item:hover{opacity:0.8;}.icon-item:active,.edit-icon-item:active{transform:scale(0.95);}#colorPickerPreview:active,#iconPickerPreview:active{opacity:0.8;}.cat-edit:hover{color:var(--primary);background:var(--primary-light);}.theme-color-item:hover,.edit-theme-color:hover{opacity:0.8;transform:scale(1.1);}.theme-color-item:active,.edit-theme-color:active{transform:scale(0.95);}</style>' +
       '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;display:flex;gap:6px;">' +
         iconSelectHtml +
         colorPaletteHtml +
@@ -3523,12 +4125,13 @@ body {
           colorPaletteDropdown.style.display = isOpen ? 'none' : 'block';
         });
 
-        // 点击颜色选择
-        document.querySelectorAll('.palette-color').forEach(dot => {
+        // 点击颜色选择（支持自定义色板和主题色）
+        const colorItems = document.querySelectorAll('.palette-color, .theme-color-item');
+        colorItems.forEach(dot => {
           dot.addEventListener('click', (e) => {
             e.stopPropagation();
             // 移除之前的选中状态
-            document.querySelectorAll('.palette-color').forEach(d => d.style.borderColor = 'transparent');
+            colorItems.forEach(d => d.style.borderColor = 'transparent');
             // 设置当前选中
             dot.style.borderColor = 'var(--text)';
             selectedColor = dot.dataset.color;
@@ -3566,23 +4169,48 @@ body {
           });
           editIconHtml += '</div>';
 
-          let editColorHtml = '<div style="display:flex;flex-direction:column;gap:1px;">';
-          // 横向:深浅程度(5列),纵向:颜色种类(10行)
-          Array.from({length: 5}, (_, depth) => {
-            editColorHtml += '<div style="display:flex;gap:1px;">' +
-              Object.values(colorPalette).map((colors) =>
-                '<div class="edit-palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === cat.color ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
-              ).join('') +
+          // 颜色编辑部分 - 自定义模式和主题色模式都支持
+          let editColorHtml = '';
+          if (colorMode === 'custom') {
+            editColorHtml = '<div style="display:flex;flex-direction:column;gap:1px;">';
+            // 横向:深浅程度(5列),纵向:颜色种类(10行)
+            Array.from({length: 5}, (_, depth) => {
+              editColorHtml += '<div style="display:flex;gap:1px;">' +
+                Object.values(colorPalette).map((colors) =>
+                  '<div class="edit-palette-color" data-color="' + colors[depth] + '" style="width:17px;height:17px;border-radius:50%;background:' + colors[depth] + ';cursor:pointer;border:2px solid ' + (colors[depth] === cat.color ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+                ).join('') +
+              '</div>';
+            });
+            editColorHtml += '</div>';
+          } else if (colorMode === 'theme') {
+            // 主题色模式：网格布局，与自定义色板一致
+            const colorsPerRow = Math.ceil(Math.sqrt(themeColors.length));
+            const totalRows = Math.ceil(themeColors.length / colorsPerRow);
+
+            editColorHtml = '<div style="display:flex;flex-direction:column;gap:1px;padding:5px;">' +
+              Array.from({length: totalRows}, (_, rowIdx) => {
+                const startIdx = rowIdx * colorsPerRow;
+                const rowColors = themeColors.slice(startIdx, startIdx + colorsPerRow);
+                return '<div style="display:flex;gap:1px;">' +
+                  rowColors.map(color =>
+                    '<div class="edit-theme-color" data-color="' + color + '" style="width:17px;height:17px;border-radius:50%;background:' + color + ';cursor:pointer;border:2px solid ' + (color === cat.color ? 'var(--text)' : 'transparent') + ';transition:all 0.15s;flex-shrink:0;"></div>'
+                  ).join('') +
+                '</div>';
+              }).join('') +
             '</div>';
-          });
-          editColorHtml += '</div>';
+          }
+
+          let editBodyHtml = '<div style="display:flex;flex-direction:column;gap:12px;">' +
+            '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">图标</label>' + editIconHtml + '</div>';
+
+          if (colorMode === 'custom' || colorMode === 'theme') {
+            editBodyHtml += '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">颜色</label>' + editColorHtml + '</div>';
+          }
+
+          editBodyHtml += '</div>';
 
           document.getElementById('genericModalTitle').textContent = '编辑分类';
-          document.getElementById('genericModalBody').innerHTML =
-            '<div style="display:flex;flex-direction:column;gap:12px;">' +
-              '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">图标</label>' + editIconHtml + '</div>' +
-              '<div><label style="font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;">颜色</label>' + editColorHtml + '</div>' +
-            '</div>';
+          document.getElementById('genericModalBody').innerHTML = editBodyHtml;
           document.getElementById('genericModalCancel').style.display = 'inline-block';
           document.getElementById('genericModalConfirm').textContent = '保存';
 
@@ -3600,17 +4228,29 @@ body {
           });
 
           let newColor = cat.color;
-          document.querySelectorAll('.edit-palette-color').forEach(dot => {
-            dot.addEventListener('click', () => {
-              document.querySelectorAll('.edit-palette-color').forEach(d => d.style.borderColor = 'transparent');
-              dot.style.borderColor = 'var(--text)';
-              newColor = dot.dataset.color;
+          if (colorMode === 'custom') {
+            document.querySelectorAll('.edit-palette-color').forEach(dot => {
+              dot.addEventListener('click', () => {
+                document.querySelectorAll('.edit-palette-color').forEach(d => d.style.borderColor = 'transparent');
+                dot.style.borderColor = 'var(--text)';
+                newColor = dot.dataset.color;
+              });
             });
-          });
+          } else if (colorMode === 'theme') {
+            document.querySelectorAll('.edit-theme-color').forEach(dot => {
+              dot.addEventListener('click', () => {
+                document.querySelectorAll('.edit-theme-color').forEach(d => d.style.borderColor = 'transparent');
+                dot.style.borderColor = 'var(--text)';
+                newColor = dot.dataset.color;
+              });
+            });
+          }
 
           document.getElementById('genericModalConfirm').onclick = () => {
             cats[editType][idx].icon = newIcon;
-            cats[editType][idx].color = newColor;
+            if (colorMode === 'custom' || colorMode === 'theme') {
+              cats[editType][idx].color = newColor;
+            }
             saveCategories(cats);
 
             // 恢复分类管理弹窗
@@ -3692,10 +4332,24 @@ body {
           const name = document.getElementById('newCatInput').value.trim();
           if (!name) return;
           if (cats[editType].some(c => c.value === name)) { showToast('分类已存在'); return; }
+
+          // 根据模式决定颜色
+          let catColor;
+          if (colorMode === 'custom' || colorMode === 'theme') {
+            // 自定义模式和主题色模式都使用用户选择的颜色
+            catColor = selectedColor;
+            if (!catColor) {
+              // 如果没有选择颜色，使用默认值
+              catColor = colorMode === 'custom' ? '#F97316' : (themeColors[0] || '#5B8DEF');
+            }
+          } else {
+            catColor = '#F97316';
+          }
+
           cats[editType].push({
             value: name,
             icon: selectedIcon,
-            color: selectedColor
+            color: catColor
           });
           saveCategories(cats);
           document.getElementById('newCatInput').value = '';
@@ -4028,6 +4682,103 @@ body {
     document.getElementById('securityModal').classList.add('show');
   });
 
+  // 刷新时间设置弹窗
+  document.getElementById('settingRefreshTime').addEventListener('click', () => {
+    const settings = getSettings();
+    const refreshTime = settings.refreshTime || 60; // 默认60秒（1分钟）
+    
+    // 判断是否为预设值
+    const presetValues = [60, 120, 300, 600, 1800, 3600]; // 1分钟、2分钟、5分钟、10分钟、30分钟、1小时（秒）
+    const select = document.getElementById('refreshTimeSelect');
+    
+    if (presetValues.includes(refreshTime)) {
+      // 预设值
+      select.value = refreshTime / 60; // 转换为分钟
+      document.getElementById('customTimeSection').style.display = 'none';
+    } else {
+      // 自定义值
+      select.value = 'custom';
+      document.getElementById('customTimeSection').style.display = 'block';
+      
+      // 根据值判断单位
+      if (refreshTime < 60) {
+        // 秒
+        document.getElementById('customTimeValue').value = refreshTime;
+        document.getElementById('customTimeUnit').value = '1';
+      } else if (refreshTime < 3600) {
+        // 分钟
+        document.getElementById('customTimeValue').value = refreshTime / 60;
+        document.getElementById('customTimeUnit').value = '60';
+      } else {
+        // 小时
+        document.getElementById('customTimeValue').value = refreshTime / 3600;
+        document.getElementById('customTimeUnit').value = '3600';
+      }
+    }
+    
+    document.getElementById('refreshTimeModal').classList.add('show');
+  });
+
+  // 刷新时间选择变化
+  document.getElementById('refreshTimeSelect').addEventListener('change', (e) => {
+    const customSection = document.getElementById('customTimeSection');
+    if (e.target.value === 'custom') {
+      customSection.style.display = 'block';
+    } else {
+      customSection.style.display = 'none';
+    }
+  });
+
+  // 刷新时间确定
+  document.getElementById('refreshTimeConfirm').addEventListener('click', () => {
+    const selectValue = document.getElementById('refreshTimeSelect').value;
+    let refreshTimeInSeconds;
+    
+    if (selectValue === 'custom') {
+      // 自定义时间
+      const customValue = parseInt(document.getElementById('customTimeValue').value);
+      const customUnit = parseInt(document.getElementById('customTimeUnit').value);
+      
+      if (!customValue || customValue <= 0) {
+        showToast('请输入有效的时长', 'error');
+        return;
+      }
+      
+      refreshTimeInSeconds = customValue * customUnit;
+    } else {
+      // 预设时间（分钟转换为秒）
+      refreshTimeInSeconds = parseInt(selectValue) * 60;
+    }
+    
+    const settings = getSettings();
+    settings.refreshTime = refreshTimeInSeconds; // 存储为秒
+    saveSettings(settings);
+    
+    // 更新显示
+    updateRefreshTimeDisplay(refreshTimeInSeconds);
+    
+    document.getElementById('refreshTimeModal').classList.remove('show');
+    showToast('设置已保存');
+  });
+
+  // 刷新时间取消
+  document.getElementById('refreshTimeCancel').addEventListener('click', () => {
+    document.getElementById('refreshTimeModal').classList.remove('show');
+  });
+
+  // 辅助函数：更新刷新时间显示
+  function updateRefreshTimeDisplay(seconds) {
+    let displayText;
+    if (seconds < 60) {
+      displayText = seconds + ' 秒';
+    } else if (seconds < 3600) {
+      displayText = (seconds / 60) + ' 分钟';
+    } else {
+      displayText = (seconds / 3600) + ' 小时';
+    }
+    document.getElementById('refreshTimeValue').textContent = displayText;
+  }
+
   // 安全开关切换
   document.getElementById('securityToggle').addEventListener('change', (e) => {
     const security = getSecuritySettings();
@@ -4273,6 +5024,38 @@ body {
   const security = getSecuritySettings();
   document.getElementById('securityStatus').textContent = security.enabled ? '已开启' : '已关闭';
   checkSecurityOnStart();
+  
+  // 刷新时间设置初始化
+  const refreshTimeDisplay = document.getElementById('refreshTimeValue');
+  if (refreshTimeDisplay) {
+    const refreshTime = settings.refreshTime || 60; // 默认60秒
+    updateRefreshTimeDisplay(refreshTime);
+  }
+  
+  // 页面可见性检测 - 自动刷新功能
+  let lastHiddenTime = null;
+  
+  // 记录页面隐藏时间
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      // 页面隐藏时记录时间
+      lastHiddenTime = Date.now();
+    } else {
+      // 页面可见时检查时间差
+      if (lastHiddenTime) {
+        const settings = getSettings();
+        const refreshTime = (settings.refreshTime || 60) * 1000; // 转换为毫秒
+        const elapsed = Date.now() - lastHiddenTime;
+        
+        // 如果超过设置的刷新时间，则刷新页面
+        if (elapsed >= refreshTime) {
+          location.reload();
+        }
+        
+        lastHiddenTime = null;
+      }
+    }
+  });
 })();
 </script>
 </body>
